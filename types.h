@@ -3,11 +3,11 @@
 typedef unsigned char byte;
 
 typedef struct{
-    float x, y, z;
-}vec3;
+    float x, y, z, w;
+}vec4;
 
 typedef struct{
-    vec3 one, two, three;
+    vec4 one, two, three;
 }triangle;
 
 typedef struct{
