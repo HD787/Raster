@@ -2,6 +2,17 @@
 #include <math.h>
 #include "types.h"
 
+#define X1 0
+#define Y1 1
+#define Z1 2
+#define X2 3
+#define Y2 4
+#define Z2 5
+#define X3 6
+#define Y3 7
+#define Z3 8
+
+
 framebuffer* createFrameBuffer(int width, int height){
     framebuffer* temp = malloc(sizeof(framebuffer));
     //magic number 3 represents 3 rgb values;
@@ -22,40 +33,45 @@ void colorPixel(framebuffer* fb, int x, int y, byte r, byte g, byte b){
     fb->pixels[val +1] = g;
     fb->pixels[val + 2] = b;
 }
-void drawlines(framebuffer* fb, triangle tri){
+
+void drawlines(framebuffer* fb, vertexBuffer* vb){
     //one to two
-    float dx1 = tri.one.x - tri.two.x;
-    float dy1 = tri.one.y - tri.two.y;
-    float len1 = sqrt(dx1 * dx1+ dy1 * dy1);
-    float angle1 = atan2(dy1, dx1);
-    for(float i = 0; i< len1; i++){
-        colorPixel(fb,
-        round(tri.two.x + cos(angle1) * i),
-        round(tri.two.y + sin(angle1) * i), 
-        255, 255, 255);
-    }
-    //two to three
-    float dx2 = tri.two.x - tri.three.x;
-    float dy2 = tri.two.y - tri.three.y;
-    float len2 = sqrt(dx2 * dx2 + dy2 * dy2);
-    float angle2 = atan2(dy2, dx2);
-    for(float i = 0; i < len2; i++){
-        colorPixel(fb,
-        round(tri.three.x + cos(angle2) * i),
-        round(tri.three.y + sin(angle2) * i), 
-        255, 255, 255);
-    }
-    //thee to one
-    float dx3 = tri.one.x - tri.three.x;
-    float dy3 = tri.one.y - tri.three.y;
-    float len3 = sqrt(dx3 * dx3 + dy3 * dy3);
-    float angle3 = atan2(dy3, dx3);
-    for(float i = 0; i < len3; i++){
-        colorPixel(fb,
-        round(tri.three.x + cos(angle3) * i),
-        round(tri.three.y + sin(angle3) * i), 
-        255, 255, 255);
-    }
+    for(int i = 0; i < vb->length; i += 9){
+        int** scanlineSpec = malloc(sizeof(int*) * fb->height);
+
+        int m1 = 2 * vb->vertices[i + Y1] - vb->vertices[i + Y2];
+        int slopeError1 = m1 - (vb->vertices[i + X1] - vb->vertices[i + X2]); 
+        for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x <= vb->vertices[i + X2]; x++){
+            colorPixel(fb, x, y, 255, 255, 255);
+            slopeError1 += m1;
+            if(slopeError1 >= 0){
+                y++;
+                slopeError1 -= 2 * (vb->vertices[i + X1] - vb->vertices[i + X2]);
+            }
+        }
+        //two to three
+        int m2 = 2 * vb->vertices[i + Y2] - vb->vertices[i + Y3];
+        int slopeError2 = m2 - (vb->vertices[i + X2] - vb->vertices[i + X3]);
+        for(int x = vb->vertices[i + X2], y = vb->vertices[i + Y2]; x <= vb->vertices[i + X3]; x++){
+            colorPixel(fb, x, y, 255, 255, 255);
+            slopeError2 += m2;
+            if(slopeError2 >= 0){
+                y++;
+                slopeError2 -= 2 * (vb->vertices[i + X2] - vb->vertices[i + X3]);
+            }
+        }
+        //three to one
+        int m3 = 2 * vb->vertices[i + Y1] - vb->vertices[i + Y3];
+        int slopeError3 = m3 - (vb->vertices[i + X1] - vb->vertices[i + X3]);
+        for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x <= vb->vertices[i + X3]; x++){
+            colorPixel(fb, x, y, 255, 255, 255);
+            slopeError3 += m3;
+            if(slopeError3 >= 0){
+                y++;
+                slopeError3 -= 2 * (vb->vertices[i + X1] - vb->vertices[i + X3]);
+            }
+        }
+    }    
 }
 
 //this will likely be called from inside the line drawing function which draws the triangles

@@ -11,6 +11,11 @@ typedef struct{
 }triangle;
 
 typedef struct{
+    int* vertices;
+    int length;
+}vertexBuffer;
+
+typedef struct{
     byte* pixels;
     int height;
     int width;
