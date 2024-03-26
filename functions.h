@@ -39,36 +39,61 @@ void drawlines(framebuffer* fb, vertexBuffer* vb){
     for(int i = 0; i < vb->length; i += 9){
         int** scanlineSpec = malloc(sizeof(int*) * fb->height);
 
-        int m1 = 2 * vb->vertices[i + Y1] - vb->vertices[i + Y2];
-        int slopeError1 = m1 - (vb->vertices[i + X1] - vb->vertices[i + X2]); 
-        for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x <= vb->vertices[i + X2]; x++){
+
+        int dx1 = abs(vb->vertices[i + X1] - vb->vertices[i + X2]);
+        int dy1 = abs(vb->vertices[i + Y1] - vb->vertices[i + Y2]);
+        int sx1, sy1;
+        if(vb->vertices[i + X1] < vb->vertices[i + X2]) sx1 = 1; else sx1 = -1;
+        if(vb->vertices[i + Y1] < vb->vertices[i + Y2]) sy1 = 1; else sy1 = -1;
+        int slopeError1 = dx1 - dy1; 
+        for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x != vb->vertices[i + X2];){
             colorPixel(fb, x, y, 255, 255, 255);
-            slopeError1 += m1;
-            if(slopeError1 >= 0){
-                y++;
-                slopeError1 -= 2 * (vb->vertices[i + X1] - vb->vertices[i + X2]);
+            int e2 = slopeError1 * 2;
+            if(slopeError1 >= -dy1){
+                slopeError1 -= dy1;
+                x += sx1;
+            }
+            if(e2 < dx1){
+                slopeError1 += dx1;
+                y += sy1;
             }
         }
         //two to three
-        int m2 = 2 * vb->vertices[i + Y2] - vb->vertices[i + Y3];
-        int slopeError2 = m2 - (vb->vertices[i + X2] - vb->vertices[i + X3]);
-        for(int x = vb->vertices[i + X2], y = vb->vertices[i + Y2]; x <= vb->vertices[i + X3]; x++){
+        int dx2 = abs(vb->vertices[i + X2] - vb->vertices[i + X3]);
+        int dy2 = abs(vb->vertices[i + Y2] - vb->vertices[i + Y3]);
+        int sx2, sy2;
+        if(vb->vertices[i + X2] < vb->vertices[i + X3]) sx2 = 1; else sx2 = -1;
+        if(vb->vertices[i + Y2] < vb->vertices[i + Y3]) sy2 = 1; else sy2 = -1;
+        int slopeError2 = dx2 - dy2; 
+        for(int x = vb->vertices[i + X2], y = vb->vertices[i + Y2]; x != vb->vertices[i + X3];){
             colorPixel(fb, x, y, 255, 255, 255);
-            slopeError2 += m2;
-            if(slopeError2 >= 0){
-                y++;
-                slopeError2 -= 2 * (vb->vertices[i + X2] - vb->vertices[i + X3]);
+            int e2 = slopeError2 * 2;
+            if(slopeError2 >= -dy2){
+                slopeError2 -= dy2;
+                x += sx2;
+            }
+            if(e2 < dx2){
+                slopeError2 += dx2;
+                y += sy2;
             }
         }
         //three to one
-        int m3 = 2 * vb->vertices[i + Y1] - vb->vertices[i + Y3];
-        int slopeError3 = m3 - (vb->vertices[i + X1] - vb->vertices[i + X3]);
-        for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x <= vb->vertices[i + X3]; x++){
+        int dx3 = abs(vb->vertices[i + X1] - vb->vertices[i + X3]);
+        int dy3 = abs(vb->vertices[i + Y1] - vb->vertices[i + Y3]);
+        int sx3, sy3;
+        if(vb->vertices[i + X1] < vb->vertices[i + X3]) sx3 = 1; else sx3 = -1;
+        if(vb->vertices[i + Y1] < vb->vertices[i + Y3]) sy3 = 1; else sy3 = -1;
+        int slopeError3 = dx3 - dy3; 
+        for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x != vb->vertices[i + X3];){
             colorPixel(fb, x, y, 255, 255, 255);
-            slopeError3 += m3;
-            if(slopeError3 >= 0){
-                y++;
-                slopeError3 -= 2 * (vb->vertices[i + X1] - vb->vertices[i + X3]);
+            int e2 = slopeError3 * 2;
+            if(slopeError3 >= -dy3){
+                slopeError3 -= dy3;
+                x += sx3;
+            }
+            if(e2 < dx3){
+                slopeError3 += dx3;
+                y += sy3;
             }
         }
     }    
