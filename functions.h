@@ -38,7 +38,9 @@ void drawlines(framebuffer* fb, vertexBuffer* vb){
     //one to two
     for(int i = 0; i < vb->length; i += 9){
         int** scanlineSpec = malloc(sizeof(int*) * fb->height);
-
+        for(int j = 0; j < fb->height; j++){
+            scanlineSpec[i] = calloc(sizeof(int) * 2);
+        }
 
         int dx1 = abs(vb->vertices[i + X1] - vb->vertices[i + X2]);
         int dy1 = abs(vb->vertices[i + Y1] - vb->vertices[i + Y2]);
@@ -48,6 +50,8 @@ void drawlines(framebuffer* fb, vertexBuffer* vb){
         int slopeError1 = dx1 - dy1; 
         for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x != vb->vertices[i + X2];){
             colorPixel(fb, x, y, 255, 255, 255);
+            if(x < scanlineSpec[y][0]) scanlineSpec[y][0] = x;
+            if(x > scanlineSpec[y][1]) scanlineSpec[y][1] = x;
             int e2 = slopeError1 * 2;
             if(slopeError1 >= -dy1){
                 slopeError1 -= dy1;
@@ -67,6 +71,8 @@ void drawlines(framebuffer* fb, vertexBuffer* vb){
         int slopeError2 = dx2 - dy2; 
         for(int x = vb->vertices[i + X2], y = vb->vertices[i + Y2]; x != vb->vertices[i + X3];){
             colorPixel(fb, x, y, 255, 255, 255);
+            if(x < scanlineSpec[y][0]) scanlineSpec[y][0] = x;
+            if(x > scanlineSpec[y][1]) scanlineSpec[y][1] = x;
             int e2 = slopeError2 * 2;
             if(slopeError2 >= -dy2){
                 slopeError2 -= dy2;
@@ -86,6 +92,8 @@ void drawlines(framebuffer* fb, vertexBuffer* vb){
         int slopeError3 = dx3 - dy3; 
         for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x != vb->vertices[i + X3];){
             colorPixel(fb, x, y, 255, 255, 255);
+            if(x < scanlineSpec[y][0]) scanlineSpec[y][0] = x;
+            if(x > scanlineSpec[y][1]) scanlineSpec[y][1] = x;
             int e2 = slopeError3 * 2;
             if(slopeError3 >= -dy3){
                 slopeError3 -= dy3;
