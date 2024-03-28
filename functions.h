@@ -35,9 +35,7 @@ void colorPixel(framebuffer* fb, int x, int y, byte r, byte g, byte b){
 }
 
 void scanline(framebuffer* fb, int** arr, byte r, byte g, byte b){
-    printf("%i", fb->height);
     for(int i = 0; i <  fb->height; i++){
-        printf("row %i: %i, %i\n", i, arr[i][0], arr[i][1]);
         for(int j = arr[i][0]; j < arr[i][1]; j++){
             if(arr[i][0] != -1 && arr[i][0] != -1){
                 colorPixel(fb, j, i, 255, 255, 255);
@@ -47,14 +45,13 @@ void scanline(framebuffer* fb, int** arr, byte r, byte g, byte b){
 }
 
 void drawlines(framebuffer* fb, vertexBuffer* vb){
-    //one to two
-    int** scanlineSpec = malloc(sizeof(int*) * fb->height);
-    for(int j = 0; j < fb->height; j++){
-        scanlineSpec[j] = malloc(2 * sizeof(int));
-        scanlineSpec[j][0] = -1;
-        scanlineSpec[j][1] = -1; 
-    }
     for(int i = 0; i < vb->length; i += 9){
+        int** scanlineSpec = malloc(sizeof(int*) * fb->height);
+        for(int j = 0; j < fb->height; j++){
+            scanlineSpec[j] = malloc(2 * sizeof(int));
+            scanlineSpec[j][0] = -1;
+            scanlineSpec[j][1] = -1; 
+        }
         int dx1 = abs(vb->vertices[i + X1] - vb->vertices[i + X2]);
         int dy1 = abs(vb->vertices[i + Y1] - vb->vertices[i + Y2]);
         int sx1, sy1;
@@ -117,6 +114,11 @@ void drawlines(framebuffer* fb, vertexBuffer* vb){
                 y += sy3;
             }
         }  
+        scanline(fb, scanlineSpec, 255, 255, 255);
+        for(int i = 0; i < fb->height; i++){
+            free(scanlineSpec[i]);
+        }
+        free(scanlineSpec);
     }
-    scanline(fb, scanlineSpec, 255, 255, 255); 
+     
 }
