@@ -1,5 +1,3 @@
-#include <SDL.h>
-
 typedef unsigned char byte;
 
 typedef struct{

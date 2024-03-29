@@ -1,4 +1,3 @@
-#include <SDL.h>
 #include <math.h>
 #include "types.h"
 
