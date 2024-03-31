@@ -33,6 +33,8 @@ void colorPixel(framebuffer* fb, int x, int y, byte r, byte g, byte b){
     fb->pixels[val + 2] = b;
 }
 
+void 
+
 void scanline(framebuffer* fb, int** arr, byte r, byte g, byte b){
     for(int i = 0; i <  fb->height; i++){
         for(int j = arr[i][0]; j < arr[i][1]; j++){
@@ -43,7 +45,11 @@ void scanline(framebuffer* fb, int** arr, byte r, byte g, byte b){
     }
 }
 
-void drawlines(framebuffer* fb, vertexBuffer* vb){
+void rasterize(framebuffer* fb, vertexBuffer* vb){
+    int* arr zBuffer = malloc(sizeof(int) * fb->length * fb->height * 4);
+    for(int i = 0; i < fb->length * fb->height * 4; i += 4){
+        zbuffer[i] = 1000;
+    }
     for(int i = 0; i < vb->length; i += 9){
         int** scanlineSpec = malloc(sizeof(int*) * fb->height);
         for(int j = 0; j < fb->height; j++){
@@ -119,5 +125,6 @@ void drawlines(framebuffer* fb, vertexBuffer* vb){
         }
         free(scanlineSpec);
     }
+    free(zBuffer);
      
 }
