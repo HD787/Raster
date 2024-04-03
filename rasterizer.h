@@ -11,120 +11,200 @@
 #define Y3 7
 #define Z3 8
 
-
-framebuffer* createFrameBuffer(int width, int height){
-    framebuffer* temp = malloc(sizeof(framebuffer));
-    //magic number 3 represents 3 rgb values;
+framebuffer *createFrameBuffer(int width, int height)
+{
+    framebuffer *temp = malloc(sizeof(framebuffer));
+    // magic number 3 represents 3 rgb values;
     temp->pixels = calloc(height * width * 3, sizeof(byte));
     temp->height = height;
     temp->width = width;
     return temp;
 }
 
-void deleteFrameBuffer(framebuffer* fb){
+void deleteFrameBuffer(framebuffer *fb)
+{
     free(fb->pixels);
     free(fb);
 }
 
-void colorPixel(framebuffer* fb, int x, int y, byte r, byte g, byte b){
+void colorPixel(framebuffer *fb, int x, int y, byte r, byte g, byte b)
+{
     int val = (y * fb->width + x) * 3;
     fb->pixels[val] = r;
-    fb->pixels[val +1] = g;
+    fb->pixels[val + 1] = g;
     fb->pixels[val + 2] = b;
 }
 
-void 
-
-void scanline(framebuffer* fb, int** arr, byte r, byte g, byte b){
-    for(int i = 0; i <  fb->height; i++){
-        for(int j = arr[i][0]; j < arr[i][1]; j++){
-            if(arr[i][0] != -1 && arr[i][0] != -1){
+//this will need to essentially be redone to determint the depth of the drawn pixels
+void scanline(framebuffer *fb, int **arr, int* zBuffer, byte r, byte g, byte b)
+{
+    for (int i = 0; i < fb->height; i++)
+    {
+        for (int j = arr[i][0]; j < arr[i][1]; j++)
+        {
+            if (arr[i][0] != -1 && arr[i][0] != -1)
+            {
                 colorPixel(fb, j, i, 255, 255, 255);
             }
         }
     }
 }
 
-void rasterize(framebuffer* fb, vertexBuffer* vb){
-    int* arr zBuffer = malloc(sizeof(int) * fb->length * fb->height * 4);
-    for(int i = 0; i < fb->length * fb->height * 4; i += 4){
-        zbuffer[i] = 1000;
+void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1, int z1, int x2, int y2, int z2)
+{
+    // this code is shamefully stolen from Ishan Khandelwals
+    // as sometimes progress is the valuable thing in a project
+
+    // this will essentially be the draw pixel call
+    if (z1 > zBuffer[(y1 * fb->height + x1) * 4])
+        zBuffer[(y1 * fb->height + x1) * 4] = z1;
+    // this will be for scanline, obviously
+    if (x1 < scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1)
+        scanlineSpec[y1][0] = x1;
+    if (x1 > scanlineSpec[y1][1] || scanlineSpec[y1][1] == -1)
+        scanlineSpec[y1][1] = x1;
+    int dx = abs(x2 - x1);
+    int dy = abs(y2 - y1);
+    int dz = abs(z2 - z1);
+    int xs, ys, zs;
+    if (x2 > x1)
+        xs = 1;
+    else
+        xs = -1;
+
+    if (y2 > y1)
+        ys = 1;
+    else
+        ys = -1;
+
+    if (z2 > z1)
+        zs = 1;
+    else
+        zs = -1;
+
+    // Driving axis is X-axis"
+    if (dx >= dy && dx >= dz)
+    {
+        int p1 = 2 * dy - dx;
+        int p2 = 2 * dz - dx;
+        while (x1 != x2)
+        {
+            x1 += xs;
+            if (p1 >= 0)
+            {
+                y1 += ys;
+                p1 -= 2 * dx;
+            }
+            if (p2 >= 0)
+            {
+                z1 += zs;
+                p2 -= 2 * dx;
+            }
+            p1 += 2 * dy;
+            p2 += 2 * dz;
+            if (z1 > zBuffer[(y1 * fb->height + x1) * 4])
+                zBuffer[(y1 * fb->height + x1) * 4] = z1;
+            if (x1 < scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1)
+                scanlineSpec[y1][0] = x1;
+            if (x1 > scanlineSpec[y1][1] || scanlineSpec[y1][1] == -1)
+                scanlineSpec[y1][1] = x1;
+        }
+
+        // Driving axis is Y-axis"
     }
-    for(int i = 0; i < vb->length; i += 9){
-        int** scanlineSpec = malloc(sizeof(int*) * fb->height);
-        for(int j = 0; j < fb->height; j++){
+    else if (dy >= dx && dy >= dz)
+    {
+        int p1 = 2 * dx - dy;
+        int p2 = 2 * dz - dy;
+        while (y1 != y2)
+        {
+            y1 += ys;
+            if (p1 >= 0)
+            {
+                x1 += xs;
+                p1 -= 2 * dy;
+            }
+            if (p2 >= 0)
+            {
+                z1 += zs;
+                p2 -= 2 * dy;
+            }
+            p1 += 2 * dx;
+            p2 += 2 * dz;
+            if (z1 > zBuffer[(y1 * fb->height + x1) * 4])
+                zBuffer[(y1 * fb->height + x1) * 4] = z1;
+            if (x1 < scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1)
+                scanlineSpec[y1][0] = x1;
+            if (x1 > scanlineSpec[y1][1] || scanlineSpec[y1][1] == -1)
+                scanlineSpec[y1][1] = x1;
+        }
+
+        // Driving axis is Z-axis"
+    }
+    else
+    {
+        int p1 = 2 * dy - dz;
+        int p2 = 2 * dx - dz;
+        while (z1 != z2)
+        {
+            z1 += zs;
+            if (p1 >= 0)
+            {
+                y1 += ys;
+                p1 -= 2 * dz;
+            }
+            if (p2 >= 0)
+            {
+                x1 += xs;
+                p2 -= 2 * dz;
+            }
+            p1 += 2 * dy;
+            p2 += 2 * dx;
+            if (z1 > zBuffer[(y1 * fb->height + x1) * 4])
+                zBuffer[(y1 * fb->height + x1) * 4] = z1;
+            if (x1 < scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1)
+                scanlineSpec[y1][0] = x1;
+            if (x1 > scanlineSpec[y1][1] || scanlineSpec[y1][1] == -1)
+                scanlineSpec[y1][1] = x1;
+        }
+    }
+}
+
+void rasterize(framebuffer *fb, vertexBuffer *vb)
+{
+    int *zBuffer = malloc(sizeof(int) * fb->width * fb->height * 4);
+    for (int i = 0; i < fb->width * fb->height * 4; i += 4)
+    {
+        zBuffer[i] = 1000;
+    }
+    for (int i = 0; i < vb->length; i += 9)
+    {
+        int **scanlineSpec = malloc(sizeof(int *) * fb->height);
+        for (int j = 0; j < fb->height; j++)
+        {
             scanlineSpec[j] = malloc(2 * sizeof(int));
             scanlineSpec[j][0] = -1;
-            scanlineSpec[j][1] = -1; 
+            scanlineSpec[j][1] = -1;
         }
-        int dx1 = abs(vb->vertices[i + X1] - vb->vertices[i + X2]);
-        int dy1 = abs(vb->vertices[i + Y1] - vb->vertices[i + Y2]);
-        int sx1, sy1;
-        if(vb->vertices[i + X1] < vb->vertices[i + X2]) sx1 = 1; else sx1 = -1;
-        if(vb->vertices[i + Y1] < vb->vertices[i + Y2]) sy1 = 1; else sy1 = -1;
-        int slopeError1 = dx1 - dy1; 
-        for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x != vb->vertices[i + X2];){
-            colorPixel(fb, x, y, 255, 255, 255);
-            if(x < scanlineSpec[y][0] || scanlineSpec[y][0] == -1) scanlineSpec[y][0] = x;
-            if(x > scanlineSpec[y][1] || scanlineSpec[y][1] == -1) scanlineSpec[y][1] = x;
-            int e2 = slopeError1 * 2;
-            if(slopeError1 >= -dy1){
-                slopeError1 -= dy1;
-                x += sx1;
-            }
-            if(e2 < dx1){
-                slopeError1 += dx1;
-                y += sy1;
-            }
-        }
-        //two to three
-        int dx2 = abs(vb->vertices[i + X2] - vb->vertices[i + X3]);
-        int dy2 = abs(vb->vertices[i + Y2] - vb->vertices[i + Y3]);
-        int sx2, sy2;
-        if(vb->vertices[i + X2] < vb->vertices[i + X3]) sx2 = 1; else sx2 = -1;
-        if(vb->vertices[i + Y2] < vb->vertices[i + Y3]) sy2 = 1; else sy2 = -1;
-        int slopeError2 = dx2 - dy2; 
-        for(int x = vb->vertices[i + X2], y = vb->vertices[i + Y2]; x != vb->vertices[i + X3];){
-            colorPixel(fb, x, y, 255, 255, 255);
-            if(x < scanlineSpec[y][0] || scanlineSpec[y][0] == -1) scanlineSpec[y][0] = x;
-            if(x > scanlineSpec[y][1] || scanlineSpec[y][1] == -1) scanlineSpec[y][1] = x;
-            int e2 = slopeError2 * 2;
-            if(slopeError2 >= -dy2){
-                slopeError2 -= dy2;
-                x += sx2;
-            }
-            if(e2 < dx2){
-                slopeError2 += dx2;
-                y += sy2;
-            }
-        }
-        //three to one
-        int dx3 = abs(vb->vertices[i + X1] - vb->vertices[i + X3]);
-        int dy3 = abs(vb->vertices[i + Y1] - vb->vertices[i + Y3]);
-        int sx3, sy3;
-        if(vb->vertices[i + X1] < vb->vertices[i + X3]) sx3 = 1; else sx3 = -1;
-        if(vb->vertices[i + Y1] < vb->vertices[i + Y3]) sy3 = 1; else sy3 = -1;
-        int slopeError3 = dx3 - dy3; 
-        for(int x = vb->vertices[i + X1], y = vb->vertices[i + Y1]; x != vb->vertices[i + X3];){
-            colorPixel(fb, x, y, 255, 255, 255);
-            if(x < scanlineSpec[y][0] || scanlineSpec[y][0] == -1) scanlineSpec[y][0] = x;
-            if(x > scanlineSpec[y][1] || scanlineSpec[y][1] == -1) scanlineSpec[y][1] = x;
-            int e2 = slopeError3 * 2;
-            if(slopeError3 >= -dy3){
-                slopeError3 -= dy3;
-                x += sx3;
-            }
-            if(e2 < dx3){
-                slopeError3 += dx3;
-                y += sy3;
-            }
-        }  
-        scanline(fb, scanlineSpec, 255, 255, 255);
-        for(int i = 0; i < fb->height; i++){
+        drawLines(fb, scanlineSpec, zBuffer, 
+        vb->vertices[i + X1], vb->vertices[i + Y1], vb->vertices[i + Z1],
+        vb->vertices[i + X2], vb->vertices[i + Y2], vb->vertices[i + Z2]);
+
+        drawLines(fb, scanlineSpec, zBuffer, 
+        vb->vertices[i + X2], vb->vertices[i + Y2], vb->vertices[i + Z3],
+        vb->vertices[i + X3], vb->vertices[i + Y3], vb->vertices[i + Z3]);
+
+        drawLines(fb, scanlineSpec, zBuffer, 
+        vb->vertices[i + X1], vb->vertices[i + Y1], vb->vertices[i + Z1],
+        vb->vertices[i + X3], vb->vertices[i + Y3], vb->vertices[i + Z3]);
+
+
+        scanline(fb, scanlineSpec, zBuffer, 255, 255, 255);
+        for (int i = 0; i < fb->height; i++)
+        {
             free(scanlineSpec[i]);
         }
         free(scanlineSpec);
     }
     free(zBuffer);
-     
 }
