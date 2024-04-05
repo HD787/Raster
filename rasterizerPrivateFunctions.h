@@ -7,15 +7,59 @@ void colorPixel(framebuffer *fb, int x, int y, byte r, byte g, byte b)
 }
 
 //this will need to essentially be redone to determint the depth of the drawn pixels
-void scanline(framebuffer *fb, int **arr, int* zBuffer, byte r, byte g, byte b)
+void scanline(framebuffer *fb, int **scanlineSpec, int* zBuffer, byte r, byte g, byte b)
 {
-    for (int i = 0; i < fb->height; i++)
+    for (int y = 0; y < fb->height; y++)
     {
-        for (int j = arr[i][0]; j < arr[i][2]; j++)
+        for (int j = scanlineSpec[y][0]; j < scanlineSpec[y][2]; j++)
         {
-            if (arr[i][0] != -1 && arr[i][0] != -1)
-            {
-                colorPixel(fb, j, i, 255, 255, 255);
+            if (scanlineSpec[y][0] != -1 && scanlineSpec[y][2] != -1)
+            {   
+                int x1 = scanlineSpec[y][0];
+                int x2 = scanlineSpec[y][2];
+                int z1 = scanlineSpec[y][1];
+                int z2 = scanlineSpec[y][3];
+                int dz = abs(x2 - x1);
+                int dx = abs(z2 - z1); 
+                int sz;
+                int sx = 1;
+                if(z1 < z2) sz = 1;
+                else sz = -1;
+                int error = 0;
+                if(dz > dx){
+                    //driving z axis
+                    for(int z = z1, x = x1; z != z2; z += sz){
+                        if (z > zBuffer[(y * fb->height + x) * 4]){
+                            zBuffer[(y * fb->height + x) * 4] = z;
+                            zBuffer[(y * fb->height + x) * 4 + 1] = r;
+                            zBuffer[(y * fb->height + x) * 4 + 2] = g;
+                            zBuffer[(y * fb->height + x) * 4 + 3] = b;
+                        }
+                        error += dx;
+                        if(error >= dz){
+                            x++;
+                            error -= dz;
+                        }
+
+                    }
+                }
+                else{
+                    //driving x axis
+                    for(int z = z1, x = x1; x != x2; x += sx){
+                        if (z > zBuffer[(y * fb->height + x) * 4]){
+                            zBuffer[(y * fb->height + x) * 4] = z;
+                            zBuffer[(y * fb->height + x) * 4 + 1] = r;
+                            zBuffer[(y * fb->height + x) * 4 + 2] = g;
+                            zBuffer[(y * fb->height + x) * 4 + 3] = b;
+                        }
+                        error += dz;
+                        if(error >= dx){
+                            z++;
+                            error -= dx;
+                        }
+
+                    }
+                }
             }
         }
     }
@@ -61,7 +105,7 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
     else
         zs = -1;
 
-    // Driving axis is X-axis"
+    // Driving axis is X-axis
     if (dx >= dy && dx >= dz)
     {
         int p1 = 2 * dy - dx;
@@ -98,7 +142,7 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             }
         }
 
-        // Driving axis is Y-axis"
+        // Driving axis is Y-axis
     }
     else if (dy >= dx && dy >= dz)
     {
@@ -136,7 +180,7 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             }
         }
 
-        // Driving axis is Z-axis"
+        // Driving axis is Z-axis
     }
     else
     {
