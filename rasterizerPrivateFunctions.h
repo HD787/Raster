@@ -6,7 +6,7 @@ void colorPixel(framebuffer *fb, int x, int y, byte r, byte g, byte b)
     fb->pixels[val + 2] = b;
 }
 
-//this will need to essentially be redone to determint the depth of the drawn pixels
+
 void scanline(framebuffer *fb, int **scanlineSpec, int* zBuffer, byte r, byte g, byte b)
 {
     for (int y = 0; y < fb->height; y++)
@@ -217,5 +217,13 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
                 scanlineSpec[y1][2] = z1;
             }
         }
+    }
+}
+
+void renderFrameBuffer(framebuffer* fb, int* zbuffer){
+    for(int f = 0, z = 0; f < fb->height * fb->width * 3; f += 3, z += 4){
+        fb->pixels[f] = zbuffer[z + 1];
+        fb->pixels[f+ 1] = zbuffer[z + 2];
+        fb->pixels[f + 2] = zbuffer[z + 3];
     }
 }
