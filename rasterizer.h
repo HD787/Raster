@@ -68,8 +68,10 @@ void rasterize(framebuffer *fb, vertexBuffer *vb)
         free(scanlineSpec);
     }
     renderFrameBuffer(fb, zBuffer);
-    for(int i = 0; i < fb->height * fb->width * 3; i++){
-        printf("%d ", zBuffer[i]);
+    for(int i = 0; i < fb->height * fb->width * 4; i++){
+        if(zBuffer[i] != 1000 && zBuffer[i] != 0){
+            printf("%i, %i \n", zBuffer[i], i);
+        }
     }
     free(zBuffer);
 }
