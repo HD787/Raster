@@ -52,7 +52,7 @@ void rasterize(framebuffer *fb, vertexBuffer *vb)
         vb->vertices[i + X2], vb->vertices[i + Y2], vb->vertices[i + Z2]);
 
         drawLines(fb, scanlineSpec, zBuffer, 
-        vb->vertices[i + X2], vb->vertices[i + Y2], vb->vertices[i + Z3],
+        vb->vertices[i + X2], vb->vertices[i + Y2], vb->vertices[i + Z2],
         vb->vertices[i + X3], vb->vertices[i + Y3], vb->vertices[i + Z3]);
 
         drawLines(fb, scanlineSpec, zBuffer, 
