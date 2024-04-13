@@ -17,8 +17,8 @@ void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g,
             int z1 = scanlineSpec[y][1];
             int z2 = scanlineSpec[y][3];
             //printf("zs :: %i : %i\n", z1, z2);
-            int dz = abs(x2 - x1);
-            int dx = abs(z2 - z1);
+            int dx = abs(x2 - x1);
+            int dz = abs(z2 - z1);
             int zs;
             int xs = 1;
             if (z1 < z2)
@@ -50,7 +50,7 @@ void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g,
             {
                 // driving z axis
                 int lastZ = 0;
-                for (int z = z1, x = x1; x != x2; z += zs)
+                for (int z = z1, x = x1; z != z2; z += zs)
                 {
                     if (z < zBuffer[(y * fb->width + x) * 4])
                     {
@@ -67,8 +67,6 @@ void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g,
                     }
                     lastZ = z;
                 }
-                printf(" %i : %i\n", lastZ, z2);
-                // printf("%i, %i", dz, dx);
             }
         }
     }
