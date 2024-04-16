@@ -5,12 +5,12 @@
 #define X1 0
 #define Y1 1
 #define Z1 2
-#define X2 3
-#define Y2 4
-#define Z2 5
-#define X3 6
-#define Y3 7
-#define Z3 8
+#define X2 4
+#define Y2 5
+#define Z2 6
+#define X3 8
+#define Y3 9
+#define Z3 10
 
 framebuffer *createFrameBuffer(int width, int height)
 {
@@ -36,7 +36,7 @@ void rasterize(framebuffer *fb, vertexBuffer *vb)
     {
         zBuffer[i] = 1000;
     }
-    for (int i = 0; i < vb->length; i += 9)
+    for (int i = 0; i < vb->length; i += 12)
     {
         int **scanlineSpec = malloc(sizeof(int *) * fb->height);
         for (int j = 0; j < fb->height; j++)
