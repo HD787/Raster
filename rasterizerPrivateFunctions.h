@@ -31,7 +31,7 @@ void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g,
                 // driving x axis
                 for (int z = z1, x = x1; x != x2; x += xs)
                 {
-                    if (z < zBuffer[(y * fb->width + x) * 4])
+                    if (z < zBuffer[(y * fb->width + x) * 4] && x1 <= fb->width && x1 >= 0 && y <= fb->height && y >= 0)
                     {
                         zBuffer[(y * fb->width + x) * 4] = z;
                         zBuffer[(y * fb->width + x) * 4 + 1] = r;
@@ -52,7 +52,7 @@ void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g,
                 int lastZ = 0;
                 for (int z = z1, x = x1; z != z2; z += zs)
                 {
-                    if (z < zBuffer[(y * fb->width + x) * 4])
+                    if (z < zBuffer[(y * fb->width + x) * 4] && x1 <= fb->width && x1 >= 0 && y <= fb->height && y >= 0)
                     {
                         zBuffer[(y * fb->width + x) * 4] = z;
                         zBuffer[(y * fb->width + x) * 4 + 1] = r;
@@ -78,7 +78,7 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
     // as sometimes progress is the most valuable thing in a project
 
     // consider more structs to organize things
-    if (z1 < zBuffer[(y1 * fb->width + x1) * 4])
+    if (z1 < zBuffer[(y1 * fb->width + x1) * 4] && x1 <= fb->width && x1 >= 0 && y1 <= fb->height && y1 >= 0)
     {
         zBuffer[(y1 * fb->width + x1) * 4] = z1;
         zBuffer[(y1 * fb->width + x1) * 4 + 1] = 255;
@@ -134,7 +134,7 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             }
             p1 += 2 * dy;
             p2 += 2 * dz;
-            if (z1 < zBuffer[(y1 * fb->width + x1) * 4])
+            if (z1 < zBuffer[(y1 * fb->width + x1) * 4] && x1 <= fb->width && x1 >= 0 && y1 <= fb->height && y1 >= 0)
             {
                 zBuffer[(y1 * fb->width + x1) * 4] = z1;
                 zBuffer[(y1 * fb->width + x1) * 4 + 1] = 255;
@@ -175,7 +175,7 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             }
             p1 += 2 * dx;
             p2 += 2 * dz;
-            if (z1 < zBuffer[(y1 * fb->width + x1) * 4])
+            if (z1 < zBuffer[(y1 * fb->width + x1) * 4] && x1 <= fb->width && x1 >= 0 && y1 <= fb->height && y1 >= 0)
             {
                 zBuffer[(y1 * fb->width + x1) * 4] = z1;
                 zBuffer[(y1 * fb->width + x1) * 4 + 1] = 255;
@@ -216,7 +216,7 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             }
             p1 += 2 * dy;
             p2 += 2 * dx;
-            if (z1 < zBuffer[(y1 * fb->width + x1) * 4])
+            if (z1 < zBuffer[(y1 * fb->width + x1) * 4] && x1 <= fb->width && x1 >= 0 && y1 <= fb->height && y1 >= 0)
             {
                 zBuffer[(y1 * fb->width + x1) * 4] = z1;
                 zBuffer[(y1 * fb->width + x1) * 4 + 1] = 255;
