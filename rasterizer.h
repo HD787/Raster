@@ -37,8 +37,8 @@ void deleteFrameBuffer(framebuffer* fb)
 
 void rasterize(framebuffer* fb, vertexBuffer *vb)
 {   
-    //cleanFrameBuffer(fb);
-    memset(fb->pixels, 0, fb->width * fb->height * 3); 
+    cleanFrameBuffer(fb);
+    //memset(fb->pixels, 0, fb->width * fb->height * 3); 
     int *zBuffer = malloc(sizeof(int) * fb->width * fb->height * 4);
     for (int i = 0; i < fb->width * fb->height * 4; i += 4)
     {
@@ -54,10 +54,10 @@ void rasterize(framebuffer* fb, vertexBuffer *vb)
         for (int j = 0; j < fb->height; j++)
         {
             scanlineSpec[j] = malloc(4 * sizeof(int));
-            scanlineSpec[j][0] = -1;
-            scanlineSpec[j][1] = -1;
-            scanlineSpec[j][2] = -1;
-            scanlineSpec[j][3] = -1;
+            scanlineSpec[j][0] = -1000000;
+            scanlineSpec[j][1] = -1000000;
+            scanlineSpec[j][2] = -1000000;
+            scanlineSpec[j][3] = -1000000;
         }
         drawLines(fb, scanlineSpec, zBuffer, 
         vb->vertices[i + X1], vb->vertices[i + Y1], vb->vertices[i + Z1],
