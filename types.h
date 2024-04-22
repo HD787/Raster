@@ -14,6 +14,11 @@ typedef struct{
 }vertexBuffer;
 
 typedef struct{
+    float* normals;
+    int length;
+}normalBuffer;
+
+typedef struct{
     byte* pixels;
     int height;
     int width;
