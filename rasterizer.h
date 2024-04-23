@@ -22,11 +22,6 @@ framebuffer *createFrameBuffer(int width, int height)
     return temp;
 }
 
-void cleanFrameBuffer(framebuffer* fb){
-    for(int i = 0; i < fb->height * fb->width * 3; i++){
-        fb->pixels[i] = 0;
-    }
-}
 
 void deleteFrameBuffer(framebuffer* fb)
 {
@@ -59,17 +54,27 @@ void rasterize(framebuffer* fb, vertexBuffer *vb)
             scanlineSpec[j][2] = -1000000;
             scanlineSpec[j][3] = -1000000;
         }
-        drawLines(fb, scanlineSpec, zBuffer, 
-        vb->vertices[i + X1], vb->vertices[i + Y1], vb->vertices[i + Z1],
-        vb->vertices[i + X2], vb->vertices[i + Y2], vb->vertices[i + Z2]);
+        Rvec3 first, second, third;
+        first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
+        second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
+        third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3]; 
+
+        //you could just denormalize here, luckily this was designed pretty well
+        NDC_ToScreenSpace(fb, &first); 
+        NDC_ToScreenSpace(fb, &second);
+        NDC_ToScreenSpace(fb, &third);
 
         drawLines(fb, scanlineSpec, zBuffer, 
-        vb->vertices[i + X2], vb->vertices[i + Y2], vb->vertices[i + Z2],
-        vb->vertices[i + X3], vb->vertices[i + Y3], vb->vertices[i + Z3]);
+        first.x,  first.y,  first.z,
+        second.x, second.y, second.z);
 
         drawLines(fb, scanlineSpec, zBuffer, 
-        vb->vertices[i + X1], vb->vertices[i + Y1], vb->vertices[i + Z1],
-        vb->vertices[i + X3], vb->vertices[i + Y3], vb->vertices[i + Z3]);
+        second.x, second.y, second.z,
+        third.x,  third.y,  third.x);
+
+        drawLines(fb, scanlineSpec, zBuffer, 
+        first.x, first.y, first.z,
+        third.x,  third.y, third.z);
 
 
         scanline(fb, scanlineSpec, zBuffer, 255, 255, 255);
