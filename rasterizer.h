@@ -33,16 +33,10 @@ void deleteFrameBuffer(framebuffer* fb)
 void rasterize(framebuffer* fb, vertexBuffer *vb)
 {   
     cleanFrameBuffer(fb);
-    //memset(fb->pixels, 0, fb->width * fb->height * 3); 
-    int *zBuffer = malloc(sizeof(int) * fb->width * fb->height * 4);
-    for (int i = 0; i < fb->width * fb->height * 4; i += 4)
-    {
+    int *zBuffer = malloc(sizeof(int) * fb->width * fb->height);
+    for (int i = 0; i < fb->width * fb->height; i ++)
         zBuffer[i] = 1000;
-        zBuffer[i + 1] = 0;
-        zBuffer[i + 2] = 0;
-        zBuffer[i + 3] = 0;
 
-    }
     for (int i = 0; i < vb->length; i += 9)
     {
         int **scanlineSpec = malloc(sizeof(int *) * fb->height);
@@ -84,6 +78,6 @@ void rasterize(framebuffer* fb, vertexBuffer *vb)
         }
         free(scanlineSpec);
     }
-    renderFrameBuffer(fb, zBuffer);
+    //renderFrameBuffer(fb, zBuffer);
     free(zBuffer);
 }
