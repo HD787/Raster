@@ -53,11 +53,6 @@ void rasterize(framebuffer* fb, vertexBuffer *vb)
         second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3]; 
 
-        //you could just denormalize here, luckily this was designed pretty well
-        NDC_ToScreenSpace(fb, &first); 
-        NDC_ToScreenSpace(fb, &second);
-        NDC_ToScreenSpace(fb, &third);
-
         drawLines(fb, scanlineSpec, zBuffer, 
         first.x,  first.y,  first.z,
         second.x, second.y, second.z);
