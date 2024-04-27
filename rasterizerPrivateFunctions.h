@@ -96,7 +96,6 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
     // consider more structs to organize things
     if (x1 <= fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 <= zBuffer[(y1 * fb->width + x1)] && z1 > 1)
     {
-        printf(" basic %i " , z1);
         zBuffer[(y1 * fb->width + x1)] = z1;
         fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
         fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
@@ -153,7 +152,6 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             p2 += 2 * dz;
             if (x1 <= fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 <= zBuffer[(y1 * fb->width + x1)] && z1 > 1)
             {
-                printf(" x axis %i " , z1);
                 zBuffer[(y1 * fb->width + x1)] = z1;
                 fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
@@ -194,7 +192,6 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             p2 += 2 * dz;
             if (x1 <= fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 <= zBuffer[(y1 * fb->width + x1)] && z1 > 1)
             {   
-                printf(" y axis %i " , z1);
                 zBuffer[(y1 * fb->width + x1)] = z1;
                 fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
@@ -215,7 +212,6 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
     // Driving axis is Z-axis
     else
     {
-        printf(" z1 %i  z2%i; \n ", z1, z2);
         int p1 = 2 * dy - dz;
         int p2 = 2 * dx - dz;
         while (z1 != z2)
@@ -236,7 +232,6 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             p2 += 2 * dx;
             if (x1 <= fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 <= zBuffer[(y1 * fb->width + x1)] && z1 > 1)
             {
-                printf(" z axis %i" , z1);
                 zBuffer[(y1 * fb->width + x1)] = z1;
                 fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
