@@ -8,9 +8,11 @@ typedef struct{
     byte r, g, b;
 }color;
 
-// typedef struct{
-//     vec4 one, two, three;
-// }triangle;
+
+typedef struct{
+    color* colors;
+    int length;
+}colorBuffer;
 
 typedef struct{
     float* vertices;
@@ -26,4 +28,11 @@ typedef struct{
     byte* pixels;
     int height;
     int width;
-}framebuffer;
+}frameBuffer;
+
+typedef struct{
+    frameBuffer* fb;
+    vertexBuffer* vb;
+    normalBuffer* nb;
+    colorBuffer* cb;
+}renderContext;
