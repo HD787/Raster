@@ -4,6 +4,10 @@ typedef struct{
     float x, y, z;
 }Rvec3;
 
+typedef struct{
+    byte r, g, b;
+}color;
+
 // typedef struct{
 //     vec4 one, two, three;
 // }triangle;

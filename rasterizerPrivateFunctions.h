@@ -1,3 +1,4 @@
+
 // this is deprecated, dont use
 // or do idc
 void colorPixel(framebuffer *fb, int x, int y, byte r, byte g, byte b)
@@ -27,7 +28,7 @@ void NDC_ToScreenSpace(framebuffer *fb, Rvec3 *vec)
     vec->z = vec->z * scaleX;
 }
 
-void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g, byte b)
+void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, color clr)
 {
     for (int y = 0; y < fb->height; y++)
     {
@@ -52,12 +53,12 @@ void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g,
                 // driving x axis
                 for (int z = z1, x = x1; x != x2; x += xs)
                 {
-                    if (x < fb->width && x >= 0 && y < (fb->height) && y >= 0 && z < zBuffer[(y * fb->width + x)] && z > 1)
+                    if (x < fb->width && x >= 0 && y < (fb->height) && y >= 0 && z < zBuffer[(y * fb->width + x)] && z > 0)
                     {
                         zBuffer[(y * fb->width + x)] = z;
-                        fb->pixels[((y * fb->width + x) * 3)] = r;
-                        fb->pixels[((y * fb->width + x) * 3) + 1] = g;
-                        fb->pixels[((y * fb->width + x) * 3) + 2] = b;
+                        fb->pixels[((y * fb->width + x) * 3)] = clr.r;
+                        fb->pixels[((y * fb->width + x) * 3) + 1] = clr.g;
+                        fb->pixels[((y * fb->width + x) * 3) + 2] = clr.b;
                     }
                     error += dz;
                     if (error >= dx)
@@ -72,12 +73,12 @@ void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g,
                 // driving z axis
                 for (int z = z1, x = x1; z != z2; z += zs)
                 {
-                    if (x < fb->width && x >= 0 && y < (fb->height) && y >= 0 && z < zBuffer[(y * fb->width + x)] && z > 1)
+                    if (x < fb->width && x >= 0 && y < (fb->height) && y >= 0 && z < zBuffer[(y * fb->width + x)] && z > 0)
                     {
                         zBuffer[(y * fb->width + x)] = z;
-                        fb->pixels[((y * fb->width + x) * 3)] = r;
-                        fb->pixels[((y * fb->width + x) * 3) + 1] = g;
-                        fb->pixels[((y * fb->width + x) * 3) + 2] = b;
+                        fb->pixels[((y * fb->width + x) * 3)] = clr.r;
+                        fb->pixels[((y * fb->width + x) * 3) + 1] = clr.g;
+                        fb->pixels[((y * fb->width + x) * 3) + 2] = clr.b;
                     }
                     error += dx;
                     if (error >= dz)
@@ -94,20 +95,20 @@ void scanline(framebuffer *fb, int **scanlineSpec, int *zBuffer, byte r, byte g,
 void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1, int z1, int x2, int y2, int z2)
 {
     // consider more structs to organize things
-    if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 1)
+    if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
     {
         zBuffer[(y1 * fb->width + x1)] = z1;
         fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
         fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
         fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
     }
-    if (y1 >= 0 && y1 < fb->height && (x1 < scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 1)
+    if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 0)
     {
         scanlineSpec[y1][0] = x1;
         scanlineSpec[y1][1] = z1;
     }
-    if (y1 >= 0 && y1 < fb->height && (x1 > scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 1)
-    {
+    if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 0)
+    { 
         scanlineSpec[y1][2] = x1;
         scanlineSpec[y1][3] = z1;
     }
@@ -150,19 +151,19 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             }
             p1 += 2 * dy;
             p2 += 2 * dz;
-            if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 1)
+            if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
             {
                 zBuffer[(y1 * fb->width + x1)] = z1;
                 fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 < scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 1)
+            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 0)
             {
                 scanlineSpec[y1][0] = x1;
                 scanlineSpec[y1][1] = z1;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 > scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 1)
+            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 0)
             {
                 scanlineSpec[y1][2] = x1;
                 scanlineSpec[y1][3] = z1;
@@ -190,19 +191,19 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             }
             p1 += 2 * dx;
             p2 += 2 * dz;
-            if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 1)
+            if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
             {   
                 zBuffer[(y1 * fb->width + x1)] = z1;
                 fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 < scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 1)
+            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 0)
             {
                 scanlineSpec[y1][0] = x1;
                 scanlineSpec[y1][1] = z1;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 > scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 1)
+            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 0)
             {
                 scanlineSpec[y1][2] = x1;
                 scanlineSpec[y1][3] = z1;
@@ -230,19 +231,20 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             }
             p1 += 2 * dy;
             p2 += 2 * dx;
-            if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 1)
+            if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
             {
+                printf("%i", z1);
                 zBuffer[(y1 * fb->width + x1)] = z1;
                 fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 < scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 1)
+            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 0)
             {
                 scanlineSpec[y1][0] = x1;
                 scanlineSpec[y1][1] = z1;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 > scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 1)
+            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 0)
             {
                 scanlineSpec[y1][2] = x1;
                 scanlineSpec[y1][3] = z1;

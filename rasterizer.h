@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 #include "types.h"
 #include "rasterizerPrivateFunctions.h"
 
@@ -52,21 +53,23 @@ void rasterize(framebuffer* fb, vertexBuffer *vb)
         first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
         second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3]; 
-
+        //printf("%f, %f, %f, %f, %f, %f\n", first.x, second.x, third.x, first.z, second.z, third.z);
         drawLines(fb, scanlineSpec, zBuffer, 
-        first.x,  first.y,  first.z,
+        first.x, first.y, first.z,
         second.x, second.y, second.z);
 
         drawLines(fb, scanlineSpec, zBuffer, 
         second.x, second.y, second.z,
-        third.x,  third.y,  third.z);
+        third.x, third.y, third.z);
 
         drawLines(fb, scanlineSpec, zBuffer, 
         first.x, first.y, first.z,
-        third.x,  third.y, third.z);
+        third.x, third.y, third.z);
 
-
-        scanline(fb, scanlineSpec, zBuffer, 200, 200, 200);
+        color clr;
+        //clr.r = 200; clr.g = 200; clr.b = 200;
+        clr.r = rand() % 255; clr.g = rand() % 255; clr.b = rand() % 255;
+        scanline(fb, scanlineSpec, zBuffer, clr);
         for (int i = 0; i < fb->height; i++)
         {
             free(scanlineSpec[i]);
