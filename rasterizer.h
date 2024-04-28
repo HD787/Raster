@@ -52,7 +52,6 @@ void rasterize(framebuffer* fb, vertexBuffer *vb)
         first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
         second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3]; 
-        printf("%f, %f, %f \n", first.z, second.z, third.z);
 
         drawLines(fb, scanlineSpec, zBuffer, 
         first.x,  first.y,  first.z,
@@ -67,7 +66,7 @@ void rasterize(framebuffer* fb, vertexBuffer *vb)
         third.x,  third.y, third.z);
 
 
-        scanline(fb, scanlineSpec, zBuffer, 255, 255, 255);
+        scanline(fb, scanlineSpec, zBuffer, 200, 200, 200);
         for (int i = 0; i < fb->height; i++)
         {
             free(scanlineSpec[i]);
