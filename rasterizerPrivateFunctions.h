@@ -102,12 +102,12 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
         fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
         fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
     }
-    if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 0)
+    if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000))
     {
         scanlineSpec[y1][0] = x1;
         scanlineSpec[y1][1] = z1;
     }
-    if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 0)
+    if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000))
     { 
         scanlineSpec[y1][2] = x1;
         scanlineSpec[y1][3] = z1;
@@ -158,12 +158,12 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 0)
+            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000))
             {
                 scanlineSpec[y1][0] = x1;
                 scanlineSpec[y1][1] = z1;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 0)
+            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000))
             {
                 scanlineSpec[y1][2] = x1;
                 scanlineSpec[y1][3] = z1;
@@ -198,12 +198,12 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 0)
+            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000))
             {
                 scanlineSpec[y1][0] = x1;
                 scanlineSpec[y1][1] = z1;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 0)
+            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000))
             {
                 scanlineSpec[y1][2] = x1;
                 scanlineSpec[y1][3] = z1;
@@ -233,18 +233,17 @@ void drawLines(framebuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
             p2 += 2 * dx;
             if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
             {
-                printf("%i", z1);
                 zBuffer[(y1 * fb->width + x1)] = z1;
                 fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
                 fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000) && z1 > 0)
+            if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000))
             {
                 scanlineSpec[y1][0] = x1;
                 scanlineSpec[y1][1] = z1;
             }
-            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000) && z1 > 0)
+            if (y1 >= 0 && y1 < fb->height && (x1 >= scanlineSpec[y1][2] || scanlineSpec[y1][2] == -1000000))
             {
                 scanlineSpec[y1][2] = x1;
                 scanlineSpec[y1][3] = z1;
