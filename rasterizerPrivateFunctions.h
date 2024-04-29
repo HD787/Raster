@@ -1,7 +1,7 @@
 
 // this is deprecated, dont use
 // or do idc
-void colorPixel(frameBuffer *fb, int x, int y, byte r, byte g, byte b)
+void colorPixel(frameBuffer* fb, int x, int y, byte r, byte g, byte b)
 {
     int val = (y * fb->width + x) * 3;
     fb->pixels[val] = r;
@@ -9,7 +9,7 @@ void colorPixel(frameBuffer *fb, int x, int y, byte r, byte g, byte b)
     fb->pixels[val + 2] = b;
 }
 
-void cleanFrameBuffer(frameBuffer *fb)
+void cleanFrameBuffer(frameBuffer* fb)
 {
     for (int i = 0; i < fb->height * fb->width * 3; i++)
     {
@@ -17,7 +17,7 @@ void cleanFrameBuffer(frameBuffer *fb)
     }
 }
 // thinking of moving this to public functions or even to the graphics engine
-void NDC_ToScreenSpace(framebuffer *fb, Rvec3 *vec)
+void NDC_ToScreenSpace(frameBuffer* fb, Rvec3* vec)
 {
     float scaleX = fb->width / 2;
     float scaleY = fb->height / 2;
@@ -28,7 +28,7 @@ void NDC_ToScreenSpace(framebuffer *fb, Rvec3 *vec)
     vec->z = vec->z * scaleX;
 }
 
-void scanline(frameBuffer *fb, int **scanlineSpec, int *zBuffer, color clr)
+void scanline(frameBuffer* fb, int **scanlineSpec, int* zBuffer, color clr)
 {
     for (int y = 0; y < fb->height; y++)
     {
@@ -92,7 +92,7 @@ void scanline(frameBuffer *fb, int **scanlineSpec, int *zBuffer, color clr)
     }
 }
 
-void drawLines(frameBuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1, int z1, int x2, int y2, int z2)
+void drawLines(frameBuffer* fb, int** scanlineSpec, int* zBuffer, int x1, int y1, int z1, int x2, int y2, int z2)
 {
     // consider more structs to organize things
     if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
@@ -255,7 +255,7 @@ void drawLines(frameBuffer *fb, int **scanlineSpec, int *zBuffer, int x1, int y1
 
 
 // this is deprecated
-void renderFrameBuffer(frameBuffer *fb, int *zbuffer)
+void renderFrameBuffer(frameBuffer* fb, int* zbuffer)
 {
     for (int f = 0, z = 0; f < (fb->height * fb->width * 3); f += 3, z += 4)
     {

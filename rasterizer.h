@@ -13,7 +13,7 @@
 #define Y3 7
 #define Z3 8
 
-framebuffer *createFrameBuffer(int width, int height)
+framebuffer* createFrameBuffer(int width, int height)
 {
     framebuffer *temp = malloc(sizeof(framebuffer));
     // magic number 3 represents 3 rgb values;
@@ -24,14 +24,14 @@ framebuffer *createFrameBuffer(int width, int height)
 }
 
 
-void deleteFrameBuffer(framebuffer* fb)
+void deleteFrameBuffer(frameBuffer* fb)
 {
     free(fb->pixels);
     free(fb);
 }
 
 
-void rasterize(framebuffer* fb, vertexBuffer *vb)
+void rasterize(frameBuffer* fb, vertexBuffer *vb)
 {   
     cleanFrameBuffer(fb);
     int *zBuffer = malloc(sizeof(int) * fb->width * fb->height);
@@ -75,6 +75,5 @@ void rasterize(framebuffer* fb, vertexBuffer *vb)
         }
         free(scanlineSpec);
     }
-    //renderFrameBuffer(fb, zBuffer);
     free(zBuffer);
 }
