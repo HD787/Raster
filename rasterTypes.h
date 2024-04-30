@@ -32,6 +32,7 @@ typedef struct{
 
 typedef struct{
     frameBuffer* fb;
+    //might not makes sense for the vertex buffer to be in here as there may be multiple
     vertexBuffer* vb;
     normalBuffer* nb;
     colorBuffer* cb;

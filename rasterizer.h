@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
-#include "types.h"
+#include "rasterTypes.h"
 #include "rasterizerPrivateFunctions.h"
 
 #define X1 0
@@ -13,9 +13,9 @@
 #define Y3 7
 #define Z3 8
 
-framebuffer* createFrameBuffer(int width, int height)
+frameBuffer* createFrameBuffer(int width, int height)
 {
-    framebuffer *temp = malloc(sizeof(framebuffer));
+    frameBuffer *temp = malloc(sizeof(frameBuffer));
     // magic number 3 represents 3 rgb values;
     temp->pixels = calloc(height * width * 3, sizeof(byte));
     temp->height = height;
