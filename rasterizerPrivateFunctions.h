@@ -16,17 +16,6 @@ void cleanFrameBuffer(frameBuffer* fb)
         fb->pixels[i] = 0;
     }
 }
-// thinking of moving this to public functions or even to the graphics engine
-void NDC_ToScreenSpace(frameBuffer* fb, Rvec3* vec)
-{
-    float scaleX = fb->width / 2;
-    float scaleY = fb->height / 2;
-    vec->x = (vec->x + 1) * scaleX;
-    vec->y = (1 - vec->y) * scaleY;
-    // the z values need to be scaled for the sake of bresenhams
-    // im thinkking this will work but tbh idk
-    vec->z = vec->z * scaleX;
-}
 
 void scanline(frameBuffer* fb, int **scanlineSpec, int* zBuffer, color clr)
 {
@@ -92,15 +81,15 @@ void scanline(frameBuffer* fb, int **scanlineSpec, int* zBuffer, color clr)
     }
 }
 
-void drawLines(frameBuffer* fb, int** scanlineSpec, int* zBuffer, int x1, int y1, int z1, int x2, int y2, int z2)
+void drawLines(frameBuffer* fb, int** scanlineSpec, int* zBuffer, color clr ,int x1, int y1, int z1, int x2, int y2, int z2)
 {
     // consider more structs to organize things
     if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
     {
         zBuffer[(y1 * fb->width + x1)] = z1;
-        fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
-        fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
-        fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
+        fb->pixels[((y1 * fb->width + x1) * 3)] = clr.r;
+        fb->pixels[((y1 * fb->width + x1) * 3) + 1] = clr.g;
+        fb->pixels[((y1 * fb->width + x1) * 3) + 2] = clr.b;
     }
     if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000))
     {
@@ -154,9 +143,9 @@ void drawLines(frameBuffer* fb, int** scanlineSpec, int* zBuffer, int x1, int y1
             if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
             {
                 zBuffer[(y1 * fb->width + x1)] = z1;
-                fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
-                fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
-                fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
+                fb->pixels[((y1 * fb->width + x1) * 3)] = clr.r;
+                fb->pixels[((y1 * fb->width + x1) * 3) + 1] = clr.g;
+                fb->pixels[((y1 * fb->width + x1) * 3) + 2] = clr.b;
             }
             if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000))
             {
@@ -194,9 +183,9 @@ void drawLines(frameBuffer* fb, int** scanlineSpec, int* zBuffer, int x1, int y1
             if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
             {   
                 zBuffer[(y1 * fb->width + x1)] = z1;
-                fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
-                fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
-                fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
+                fb->pixels[((y1 * fb->width + x1) * 3)] = clr.r;
+                fb->pixels[((y1 * fb->width + x1) * 3) + 1] = clr.g;
+                fb->pixels[((y1 * fb->width + x1) * 3) + 2] = clr.b;
             }
             if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000))
             {
@@ -234,9 +223,9 @@ void drawLines(frameBuffer* fb, int** scanlineSpec, int* zBuffer, int x1, int y1
             if (x1 < fb->width && x1 >= 0 && y1 < (fb->height) && y1 >= 0 && z1 < zBuffer[(y1 * fb->width + x1)] && z1 > 0)
             {
                 zBuffer[(y1 * fb->width + x1)] = z1;
-                fb->pixels[((y1 * fb->width + x1) * 3)] = 255;
-                fb->pixels[((y1 * fb->width + x1) * 3) + 1] = 255;
-                fb->pixels[((y1 * fb->width + x1) * 3) + 2] = 255;
+                fb->pixels[((y1 * fb->width + x1) * 3)] = clr.r;
+                fb->pixels[((y1 * fb->width + x1) * 3) + 1] = clr.g;
+                fb->pixels[((y1 * fb->width + x1) * 3) + 2] = clr.b;
             }
             if (y1 >= 0 && y1 < fb->height && (x1 <= scanlineSpec[y1][0] || scanlineSpec[y1][0] == -1000000))
             {

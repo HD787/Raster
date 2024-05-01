@@ -10,7 +10,9 @@ typedef struct{
 
 
 typedef struct{
-    color* colors;
+    //color* colors;
+    //i think this will be better as we can navigate it in the same way we would a vb
+    byte* colors;
     int length;
 }colorBuffer;
 
