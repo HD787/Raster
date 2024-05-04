@@ -13,42 +13,46 @@
 #define Y3 7
 #define Z3 8
 
-frameBuffer* createFrameBuffer(int width, int height)
-{
-    frameBuffer *temp = malloc(sizeof(frameBuffer));
-    // magic number 3 represents 3 rgb values;
-    temp->pixels = calloc(height * width * 3, sizeof(byte));
+
+renderContext* createRenderContext(int width, int height){
+    renderContext* temp = malloc(sizeof(renderContext));
+
+    temp->frameBuffer = calloc(height * width * 3, sizeof(byte));
+
+    temp->zBuffer = malloc(sizeof(int) * width * height);
+    for (int i = 0; i < width * height; i ++)
+        temp->zBuffer[i] = 1000;
+
+    temp->scanlineSpec = malloc(sizeof(int *) * height);
+    for (int j = 0; j < height; j++){
+        temp->scanlineSpec[j] = malloc(4 * sizeof(int));
+        temp->scanlineSpec[j][0] = -1000000;
+        temp->scanlineSpec[j][1] = -1000000;
+        temp->scanlineSpec[j][2] = -1000000;
+        temp->scanlineSpec[j][3] = -1000000;
+    }
+
     temp->height = height;
     temp->width = width;
     return temp;
 }
 
-
-void deleteFrameBuffer(frameBuffer* fb)
-{
-    free(fb->pixels);
-    free(fb);
+void deleteRenderContext(renderContext* rc){
+    free(rc->frameBuffer);
+    free(rc->zBuffer);
+    for(int i = 0; i < 4; i++){
+        free(rc->scanlineSpec[i]);
+    }
+    free(rc->scanlineSpec);
 }
 
-
-void rasterize(frameBuffer* fb, vertexBuffer *vb, colorBuffer* cb)
+void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 {   
-    cleanFrameBuffer(fb);
-    int *zBuffer = malloc(sizeof(int) * fb->width * fb->height);
-    for (int i = 0; i < fb->width * fb->height; i ++)
-        zBuffer[i] = 1000;
-
+    cleanFrameBuffer(rc);
+    cleanzBuffer(rc);
     for (int i = 0; i < vb->length; i += 9)
     {
-        int **scanlineSpec = malloc(sizeof(int *) * fb->height);
-        for (int j = 0; j < fb->height; j++)
-        {
-            scanlineSpec[j] = malloc(4 * sizeof(int));
-            scanlineSpec[j][0] = -1000000;
-            scanlineSpec[j][1] = -1000000;
-            scanlineSpec[j][2] = -1000000;
-            scanlineSpec[j][3] = -1000000;
-        }
+        cleanScanlineSpec(rc);
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
         //clr.r = rand() % 255; clr.g = rand() % 255; clr.b = rand() % 255;
@@ -56,26 +60,19 @@ void rasterize(frameBuffer* fb, vertexBuffer *vb, colorBuffer* cb)
         Rvec3 first, second, third;
         first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
         second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
-        third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3]; 
-        drawLines(fb, scanlineSpec, zBuffer, clr,
+        third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
+
+        drawLines(rc, clr,
         first.x, first.y, first.z,
         second.x, second.y, second.z);
 
-        drawLines(fb, scanlineSpec, zBuffer, clr,
+        drawLines(rc, clr,
         second.x, second.y, second.z,
         third.x, third.y, third.z);
 
-        drawLines(fb, scanlineSpec, zBuffer, clr,
+        drawLines(rc, clr,
         first.x, first.y, first.z,
         third.x, third.y, third.z);
-
-        
-        scanline(fb, scanlineSpec, zBuffer, clr);
-        for (int i = 0; i < fb->height; i++)
-        {
-            free(scanlineSpec[i]);
-        }
-        free(scanlineSpec);
+        scanline(rc, clr);
     }
-    free(zBuffer);
 }
