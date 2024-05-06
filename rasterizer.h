@@ -46,6 +46,27 @@ void deleteRenderContext(renderContext* rc){
     free(rc->scanlineSpec);
 }
 
+//size is not count/stride
+vertexBuffer* createVertexBuffer(int size){
+    vertexBuffer* temp = malloc(sizeof(vertexBuffer));
+    temp->inputVertices = malloc(sizeof(float) * size);
+    temp->vertices = malloc(sizeof(float) * size);
+    temp->length = size;
+    return temp;
+}
+
+void deleteVertexBuffer(vertexBuffer* vb){}
+
+colorBuffer* createColorBuffer(int size){
+    colorBuffer* temp = malloc(sizeof(colorBuffer));
+    temp->inputColors = malloc(sizeof(byte) * size);
+    temp->colors = malloc(sizeof(byte) * size);
+    temp->length = size;
+    return temp;
+}
+
+void deleteColorBuffer(colorBuffer* cb){}
+
 void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 {   
     cleanFrameBuffer(rc);
@@ -55,7 +76,6 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         cleanScanlineSpec(rc);
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
-        //clr.r = rand() % 255; clr.g = rand() % 255; clr.b = rand() % 255;
 
         Rvec3 first, second, third;
         first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
