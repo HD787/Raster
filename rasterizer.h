@@ -67,10 +67,15 @@ colorBuffer* createColorBuffer(int size){
 
 void deleteColorBuffer(colorBuffer* cb){}
 
-void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
-{   
+
+
+void cleanRenderContext(renderContext* rc){
     cleanFrameBuffer(rc);
     cleanzBuffer(rc);
+}
+
+void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
+{   
     for (int i = 0; i < vb->length; i += 9)
     {
         cleanScanlineSpec(rc);

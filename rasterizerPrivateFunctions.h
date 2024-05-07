@@ -10,11 +10,7 @@ void colorPixel(renderContext* rc, int x, int y, byte r, byte g, byte b)
 }
 
 //move these guys to private
-void cleanzBuffer(renderContext* rc){
-    for (int i = 0; i < (rc->width * rc->height); i++){
-        rc->zBuffer[i] = 1000;
-    }
-}
+
 
 void cleanScanlineSpec(renderContext* rc){
     for(int i = 0; i < rc->height; i++){
@@ -25,6 +21,12 @@ void cleanScanlineSpec(renderContext* rc){
     }
 }
 
+void cleanzBuffer(renderContext* rc){
+    for (int i = 0; i < (rc->width * rc->height); i++){
+        rc->zBuffer[i] = 1000;
+    }
+}
+
 void cleanFrameBuffer(renderContext* rc){
     for (int i = 0; i < rc->height * rc->width * 3; i++)
     {
@@ -32,11 +34,7 @@ void cleanFrameBuffer(renderContext* rc){
     } 
 }
 
-void cleanRenderContext(renderContext* rc){
-    cleanFrameBuffer(rc);
-    cleanzBuffer(rc);
-    cleanScanlineSpec(rc);
-}
+
 
 void scanline(renderContext* rc, color clr)
 {
