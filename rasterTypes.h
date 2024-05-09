@@ -8,17 +8,19 @@ typedef struct{
     byte r, g, b;
 }color;
 
+//
+
 typedef struct{
-    //color* colors;
-    //i think this will be better as we can navigate it in the same way we would a vb
     byte* inputColors;
     byte* colors;
+    //byte* indexBuffer;
     int length;
 }colorBuffer;
 
 typedef struct{
     float* inputVertices;
     float* vertices;
+    byte* indexBuffer;
     int length;
 }vertexBuffer;
 

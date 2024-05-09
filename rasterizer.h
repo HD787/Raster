@@ -47,12 +47,22 @@ void deleteRenderContext(renderContext* rc){
 }
 
 //size is not count/stride
+//thats a division sign btw
+//but maybe it should be
 vertexBuffer* createVertexBuffer(int size){
     vertexBuffer* temp = malloc(sizeof(vertexBuffer));
     temp->inputVertices = malloc(sizeof(float) * size);
     temp->vertices = malloc(sizeof(float) * size);
+    temp->indexBuffer = malloc(sizeof(byte) * size/3);
     temp->length = size;
     return temp;
+}
+
+void cleanIndexBuffer(vertexBuffer* vb){
+    //this may not be necessary tbh
+    for(int i = 0; i < vb->length/3; i++){
+        vb->indexBuffer[i] = 0;
+    }
 }
 
 void deleteVertexBuffer(vertexBuffer* vb){}
@@ -78,6 +88,7 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 {   
     for (int i = 0; i < vb->length; i += 9)
     {
+        if(vb->indexBuffer[i/3] == 0) { continue;}
         cleanScanlineSpec(rc);
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
