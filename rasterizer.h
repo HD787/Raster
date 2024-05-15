@@ -65,7 +65,12 @@ void cleanIndexBuffer(vertexBuffer* vb){
     }
 }
 
-void deleteVertexBuffer(vertexBuffer* vb){}
+void deleteVertexBuffer(vertexBuffer* vb){
+    free(vb->indexBuffer);
+    free(vb->vertices);
+    free(vb->inputVertices);
+    free(vb);
+}
 
 colorBuffer* createColorBuffer(int size){
     colorBuffer* temp = malloc(sizeof(colorBuffer));
@@ -75,7 +80,11 @@ colorBuffer* createColorBuffer(int size){
     return temp;
 }
 
-void deleteColorBuffer(colorBuffer* cb){}
+void deleteColorBuffer(colorBuffer* cb){
+    free(cb->colors);
+    free(cb->inputColors);
+    free(cb);
+}
 
 
 
