@@ -97,7 +97,8 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 {   
     for (int i = 0; i < vb->length; i += 9)
     {
-        if(vb->indexBuffer[i/3] == 0) { continue;}
+        //commenting out this line disables backface culling
+        //if(vb->indexBuffer[i/3] == 0) { continue;}
         cleanScanlineSpec(rc);
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];

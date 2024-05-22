@@ -9,8 +9,6 @@ void colorPixel(renderContext* rc, int x, int y, byte r, byte g, byte b)
     rc->frameBuffer[val + 2] = b;
 }
 
-//move these guys to private
-
 
 void cleanScanlineSpec(renderContext* rc){
     for(int i = 0; i < rc->height; i++){
