@@ -1,5 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
+//delete SDL from here later only for debugging purposes
+#include <SDL.h>
 #include "rasterTypes.h"
 #include "rasterizerPrivateFunctions.h"
 
@@ -95,11 +97,20 @@ void cleanRenderContext(renderContext* rc){
 
 void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 {   
+    SDL_Init(SDL_INIT_TIMER);
+    Uint32  linesStart, linesEnd,
+            scanLineStart, scanLineEnd;
+    Uint32 lineInterval = 0;
+    Uint32 scanLineInterval = 0;
+    
+
     for (int i = 0; i < vb->length; i += 9)
     {
         //commenting out this line disables backface culling
         //if(vb->indexBuffer[i/3] == 0) { continue;}
+       
         cleanScanlineSpec(rc);
+        
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
 
@@ -108,6 +119,48 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
 
+        // //two vertices behind viewport
+        // //first and second
+        // if(first.z < 0 && second.z < 0 && third.z > 0){
+
+        // }
+        // //first and third
+        // if(first.z < 0 && second.z > 0 && third.z < 0){
+
+        // }
+        // //second and third
+        // if(first.z > 0 && second.z < 0 && third.z < 0){
+
+        // }
+
+        // //one vertex behind the viewport
+        // //first
+        // if(first.z < 0 && second.z > 0 && third.z > 0){
+        //     Rvec3 one, two;
+        //     one = interpolatePoint(first, second);
+        //     two = interpolatePoint(first, third);
+        // }
+        // //second
+        // if(first.z > 0 && second.z < 0 && third.z > 0){
+        //     Rvec3 one, two;
+        //     one = interpolatePoint(first, second);
+        //     two = interpolatePoint(first, third);
+        // }
+        // //third
+        // if(first.z > 0 && second.z > 0 && third.z < 0){
+        //     Rvec3 one, two;
+        //     one = interpolatePoint(first, second);
+        //     two = interpolatePoint(first, third);
+            
+        //     drawLines(rc, clr,)
+        //     drawLines(rc, clr)
+        //     drawLines(rc, clr)
+        //     drawlines(rc, clr)
+        //     drawlines(rc, clr)
+
+        //     continue;
+        // }
+        linesStart = SDL_GetTicks();
         drawLines(rc, clr,
         first.x, first.y, first.z,
         second.x, second.y, second.z);
@@ -119,6 +172,16 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         drawLines(rc, clr,
         first.x, first.y, first.z,
         third.x, third.y, third.z);
+        linesEnd = SDL_GetTicks();
+
+        scanLineStart = SDL_GetTicks();
         scanline(rc, clr);
+        scanLineEnd = SDL_GetTicks();
+        
+        lineInterval += linesEnd - linesStart;
+        scanLineInterval += scanLineEnd - scanLineStart;
     }
+    
+    
+    printf("lines: %d, scan: %d\n", lineInterval, scanLineInterval);
 }
