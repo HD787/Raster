@@ -35,7 +35,8 @@ typedef struct{
 typedef struct{
     byte* frameBuffer;
     int* zBuffer;
-    int** scanlineSpec;
+    //stride of 4
+    int* scanlineSpec;
     int height;
     int width;
 }renderContext;

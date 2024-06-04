@@ -25,13 +25,12 @@ renderContext* createRenderContext(int width, int height){
     for (int i = 0; i < width * height; i ++)
         temp->zBuffer[i] = 1000;
 
-    temp->scanlineSpec = malloc(sizeof(int *) * height);
-    for (int j = 0; j < height; j++){
-        temp->scanlineSpec[j] = malloc(4 * sizeof(int));
-        temp->scanlineSpec[j][0] = -1000000;
-        temp->scanlineSpec[j][1] = -1000000;
-        temp->scanlineSpec[j][2] = -1000000;
-        temp->scanlineSpec[j][3] = -1000000;
+    temp->scanlineSpec = malloc(sizeof(int *) * height* 4);
+    for (int j = 0; j < height * 4; j += 4){
+        temp->scanlineSpec[j] = -1000000;
+        temp->scanlineSpec[j + 1] = -1000000;
+        temp->scanlineSpec[j + 2] = -1000000;
+        temp->scanlineSpec[j + 3] = -1000000;
     }
 
     temp->height = height;
@@ -42,9 +41,6 @@ renderContext* createRenderContext(int width, int height){
 void deleteRenderContext(renderContext* rc){
     free(rc->frameBuffer);
     free(rc->zBuffer);
-    for(int i = 0; i < 4; i++){
-        free(rc->scanlineSpec[i]);
-    }
     free(rc->scanlineSpec);
 }
 
@@ -99,18 +95,23 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 {   
     SDL_Init(SDL_INIT_TIMER);
     Uint32  linesStart, linesEnd,
-            scanLineStart, scanLineEnd;
+            scanLineStart, scanLineEnd,
+            cleanStart, cleanEnd,
+            loadStart, loadEnd;
     Uint32 lineInterval = 0;
     Uint32 scanLineInterval = 0;
-    
+    Uint32 cleanInterval = 0;
+    Uint32 loadInterval = 0;
+    printf("%i\n", rc->height*4); 
 
     for (int i = 0; i < vb->length; i += 9)
     {
         //commenting out this line disables backface culling
         //if(vb->indexBuffer[i/3] == 0) { continue;}
-       
+        cleanStart = SDL_GetTicks();
         cleanScanlineSpec(rc);
-        
+        cleanEnd = SDL_GetTicks();
+        loadStart = SDL_GetTicks();
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
 
@@ -118,7 +119,7 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
         second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
-
+        loadEnd = SDL_GetTicks();
         // //two vertices behind viewport
         // //first and second
         // if(first.z < 0 && second.z < 0 && third.z > 0){
@@ -173,15 +174,17 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         first.x, first.y, first.z,
         third.x, third.y, third.z);
         linesEnd = SDL_GetTicks();
-
+        
         scanLineStart = SDL_GetTicks();
         scanline(rc, clr);
         scanLineEnd = SDL_GetTicks();
         
+        loadInterval += loadEnd - loadStart;
+        cleanInterval += cleanEnd - cleanStart;
         lineInterval += linesEnd - linesStart;
         scanLineInterval += scanLineEnd - scanLineStart;
     }
     
     
-    printf("lines: %d, scan: %d\n", lineInterval, scanLineInterval);
+    //printf("lines: %d, scan: %d, clean: %d, load: %d\n", lineInterval, scanLineInterval, cleanInterval, loadInterval);
 }

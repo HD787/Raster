@@ -11,11 +11,11 @@ void colorPixel(renderContext* rc, int x, int y, byte r, byte g, byte b)
 
 
 void cleanScanlineSpec(renderContext* rc){
-    for(int i = 0; i < rc->height; i++){
-        rc->scanlineSpec[i][0] = -1000000;
-        rc->scanlineSpec[i][1] = -1000000;
-        rc->scanlineSpec[i][2] = -1000000;
-        rc->scanlineSpec[i][3] = -1000000;
+    for(int i = 0; i < rc->height * 4; i++){
+        rc->scanlineSpec[i] = -1000000;
+        rc->scanlineSpec[i + 1] = -1000000;
+        rc->scanlineSpec[i + 2] = -1000000;
+        rc->scanlineSpec[i + 3] = -1000000;
     }
 }
 
@@ -36,15 +36,14 @@ void cleanFrameBuffer(renderContext* rc){
 
 void scanline(renderContext* rc, color clr)
 {
-    for (int y = 0; y < rc->height; y++)
+    for (int y = 0; y < rc->height * 4; y += 4)
     {
-        if (rc->scanlineSpec[y][0] != -1000000 && rc->scanlineSpec[y][2] != -1000000)
+        if (rc->scanlineSpec[y] != -1000000 && rc->scanlineSpec[y + 2] != -1000000)
         {
-
-            int x1 = rc->scanlineSpec[y][0];
-            int x2 = rc->scanlineSpec[y][2];
-            int z1 = rc->scanlineSpec[y][1];
-            int z2 = rc->scanlineSpec[y][3];
+            int x1 = rc->scanlineSpec[y];
+            int x2 = rc->scanlineSpec[y + 2];
+            int z1 = rc->scanlineSpec[y + 1];
+            int z2 = rc->scanlineSpec[y + 3];
             int dx = abs(x2 - x1);
             int dz = abs(z2 - z1);
             int zs;
@@ -108,15 +107,15 @@ void drawLines(renderContext* rc, color clr, int x1, int y1, int z1, int x2, int
         rc->frameBuffer[((y1 * rc->width + x1) * 3) + 1] = clr.g;
         rc->frameBuffer[((y1 * rc->width + x1) * 3) + 2] = clr.b;
     }
-    if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1][0] || rc->scanlineSpec[y1][0] == -1000000))
+    if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1 * 4] || rc->scanlineSpec[y1 * 4] == -1000000))
     {
-        rc->scanlineSpec[y1][0] = x1;
-        rc->scanlineSpec[y1][1] = z1;
+        rc->scanlineSpec[y1 * 4] = x1;
+        rc->scanlineSpec[(y1 * 4) + 1] = z1;
     }
-    if (y1 >= 0 && y1 < rc->height && (x1 >= rc->scanlineSpec[y1][2] || rc->scanlineSpec[y1][2] == -1000000))
+    if (y1 >= 0 && y1 < rc->height && (x1 >= rc->scanlineSpec[(y1 * 4) + 2] || rc->scanlineSpec[(y1 * 4) + 2] == -1000000))
     { 
-        rc->scanlineSpec[y1][2] = x1;
-        rc->scanlineSpec[y1][3] = z1;
+        rc->scanlineSpec[(y1 * 4) + 2] = x1;
+        rc->scanlineSpec[(y1 * 4) + 3] = z1;
     }
     int dx = abs(x2 - x1);
     int dy = abs(y2 - y1);
@@ -164,15 +163,15 @@ void drawLines(renderContext* rc, color clr, int x1, int y1, int z1, int x2, int
                 rc->frameBuffer[((y1 * rc->width + x1) * 3) + 1] = clr.g;
                 rc->frameBuffer[((y1 * rc->width + x1) * 3) + 2] = clr.b;
             }
-            if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1][0] || rc->scanlineSpec[y1][0] == -1000000))
+            if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1 * 4] || rc->scanlineSpec[y1 * 4] == -1000000))
             {
-                rc->scanlineSpec[y1][0] = x1;
-                rc->scanlineSpec[y1][1] = z1;
+                rc->scanlineSpec[y1 * 4] = x1;
+                rc->scanlineSpec[(y1 * 4) + 1] = z1;
             }
-            if (y1 >= 0 && y1 < rc->height && (x1 >= rc->scanlineSpec[y1][2] || rc->scanlineSpec[y1][2] == -1000000))
+            if (y1 >= 0 && y1 < rc->height && (x1 >= rc->scanlineSpec[(y1 * 4) + 2] || rc->scanlineSpec[(y1 * 4) + 2] == -1000000))
             {
-                rc->scanlineSpec[y1][2] = x1;
-                rc->scanlineSpec[y1][3] = z1;
+                rc->scanlineSpec[(y1 * 4) + 2] = x1;
+                rc->scanlineSpec[(y1 * 4) + 3] = z1;
             }
         }
 
@@ -204,15 +203,15 @@ void drawLines(renderContext* rc, color clr, int x1, int y1, int z1, int x2, int
                 rc->frameBuffer[((y1 * rc->width + x1) * 3) + 1] = clr.g;
                 rc->frameBuffer[((y1 * rc->width + x1) * 3) + 2] = clr.b;
             }
-            if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1][0] || rc->scanlineSpec[y1][0] == -1000000))
+            if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1 * 4] || rc->scanlineSpec[y1 * 4] == -1000000))
             {
-                rc->scanlineSpec[y1][0] = x1;
-                rc->scanlineSpec[y1][1] = z1;
+                rc->scanlineSpec[y1 * 4] = x1;
+                rc->scanlineSpec[y1 * 4 + 1] = z1;
             }
-            if (y1 >= 0 && y1 < rc->height && (x1 >= rc->scanlineSpec[y1][2] || rc->scanlineSpec[y1][2] == -1000000))
+            if (y1 >= 0 && y1 < rc->height && (x1 >= rc->scanlineSpec[(y1 * 4) + 2] || rc->scanlineSpec[(y1 * 4) + 2] == -1000000))
             {
-                rc->scanlineSpec[y1][2] = x1;
-                rc->scanlineSpec[y1][3] = z1;
+                rc->scanlineSpec[(y1 * 4) + 2] = x1;
+                rc->scanlineSpec[(y1 * 4) + 3] = z1;
             }
         }
     }
@@ -244,15 +243,15 @@ void drawLines(renderContext* rc, color clr, int x1, int y1, int z1, int x2, int
                 rc->frameBuffer[((y1 * rc->width + x1) * 3) + 1] = clr.g;
                 rc->frameBuffer[((y1 * rc->width + x1) * 3) + 2] = clr.b;
             }
-            if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1][0] || rc->scanlineSpec[y1][0] == -1000000))
+            if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1 * 4] || rc->scanlineSpec[y1 * 4] == -1000000))
             {
-                rc->scanlineSpec[y1][0] = x1;
-                rc->scanlineSpec[y1][1] = z1;
+                rc->scanlineSpec[y1 * 4] = x1;
+                rc->scanlineSpec[(y1 * 4) + 1] = z1;
             }
-            if (y1 >= 0 && y1 < rc->height && (x1 >= rc->scanlineSpec[y1][2] || rc->scanlineSpec[y1][2] == -1000000))
+            if (y1 >= 0 && y1 < rc->height && (x1 >= rc->scanlineSpec[(y1 * 4) + 2] || rc->scanlineSpec[(y1 * 4) + 2] == -1000000))
             {
-                rc->scanlineSpec[y1][2] = x1;
-                rc->scanlineSpec[y1][3] = z1;
+                rc->scanlineSpec[(y1 * 4) + 2] = x1;
+                rc->scanlineSpec[(y1 * 4) + 3] = z1;
             }
         }
     }
