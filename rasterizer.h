@@ -102,7 +102,6 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
     Uint32 scanLineInterval = 0;
     Uint32 cleanInterval = 0;
     Uint32 loadInterval = 0;
-    printf("%i\n", rc->height*4); 
 
     for (int i = 0; i < vb->length; i += 9)
     {
@@ -174,7 +173,8 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         first.x, first.y, first.z,
         third.x, third.y, third.z);
         linesEnd = SDL_GetTicks();
-        
+        // for(int i = 0; i <= rc->height * 4; i += 4)
+        // printf("%d, %d, %d, %d\n", rc->scanlineSpec[i], rc->scanlineSpec[i + 1], rc->scanlineSpec[i + 2], rc->scanlineSpec[i + 3]);
         scanLineStart = SDL_GetTicks();
         scanline(rc, clr);
         scanLineEnd = SDL_GetTicks();

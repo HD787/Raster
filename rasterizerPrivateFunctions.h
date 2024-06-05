@@ -36,14 +36,14 @@ void cleanFrameBuffer(renderContext* rc){
 
 void scanline(renderContext* rc, color clr)
 {
-    for (int y = 0; y < rc->height * 4; y += 4)
+    for (int y = 0; y < rc->height; y += 1)
     {
-        if (rc->scanlineSpec[y] != -1000000 && rc->scanlineSpec[y + 2] != -1000000)
+        if (rc->scanlineSpec[y * 4] != -1000000 && rc->scanlineSpec[y * 4 + 2] != -1000000)
         {
-            int x1 = rc->scanlineSpec[y];
-            int x2 = rc->scanlineSpec[y + 2];
-            int z1 = rc->scanlineSpec[y + 1];
-            int z2 = rc->scanlineSpec[y + 3];
+            int x1 = rc->scanlineSpec[y * 4];
+            int x2 = rc->scanlineSpec[y * 4 + 2];
+            int z1 = rc->scanlineSpec[y * 4 + 1];
+            int z2 = rc->scanlineSpec[y * 4+ 3];
             int dx = abs(x2 - x1);
             int dz = abs(z2 - z1);
             int zs;
