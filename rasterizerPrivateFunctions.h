@@ -32,39 +32,6 @@ void cleanFrameBuffer(renderContext* rc){
     } 
 }
 
-Rvec3 interpolatePointForX(Rvec3 outer, Rvec3 inner, renderContext* rc){
-    Rvec3 temp;
-    if(outer.x > rc->width) temp.x = rc->width + 1;
-    else temp.x = -1;
-    int t = (temp.x - inner.x) / (outer.x - inner.x);
-    temp.y = inner.y + t * (inner.y - outer.y);
-    temp.z = inner.z+ t * (inner.z - outer.z);
-
-    return temp;
-}
-
-Rvec3 interpolatePointForY(Rvec3 outer, Rvec3 inner, renderContext* rc){
-    Rvec3 temp;
-    if(outer.y > rc->height) temp.y = rc->height + 1;
-    else temp.y = -1;
-    int t = (temp.y - inner.y) / (outer.y - inner.y);
-    temp.x = inner.x + t * (inner.x - outer.x);
-    temp.z = inner.z+ t * (inner.z - outer.z);
-
-    return temp;
-}
-
-
-//maybe only do this for negative values
-Rvec3 interpolatePointForY(Rvec3 outer, Rvec3 inner){
-    Rvec3 temp;
-    temp.z = -1;
-    int t = (temp.z - inner.z) / (outer.z - inner.z);
-    temp.x = inner.x + t * (inner.x - outer.x);
-    temp.y = inner.y + t * (inner.y - outer.y);
-
-    return temp;
-}
 
 void scanline(renderContext* rc, color clr)
 {
