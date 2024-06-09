@@ -35,6 +35,12 @@ Rvec3 interpolatePointForZ(Rvec3 outer, Rvec3 inner){
     return temp;
 }
 
+Rvec3 interpolatePoint(Rvec3 outer, Rvec3 inner, renderContext* rc){
+    Rvec3 newPoint;
+
+    return newPoint;
+}
+
 //bounds checking funcntion
 int vertexInFrustum(Rvec3 vector, renderContext* rc){
     if(vector.z < 0) return 0;
