@@ -120,59 +120,33 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
         loadEnd = SDL_GetTicks();
-        // //two vertices behind viewport
-        // //first and second
-        // if(first.z < 0 && second.z < 0 && third.z > 0){
 
-        // }
-        // //first and third
-        // if(first.z < 0 && second.z > 0 && third.z < 0){
+        if(!triangleInFrustum(first, second, third, rc)) continue;
 
+        //if one vertex is outside the frustum
+        // if(!vertexInFrustum(first, rc) && vertexInFrustum(second, rc) && vertexInFrustum(third, rc)){
+        //     Rvec3 new1 = interpolatePoint(first, second)
+        //     Rvec3 new2 = interpolatePoint(first, third);
+        //     drawLines(rc, clr, f)
         // }
-        // //second and third
-        // if(first.z > 0 && second.z < 0 && third.z < 0){
-
-        // }
-
-        // //one vertex behind the viewport
-        // //first
-        // if(first.z < 0 && second.z > 0 && third.z > 0){
-        //     Rvec3 one, two;
-        //     one = interpolatePoint(first, second);
-        //     two = interpolatePoint(first, third);
-        // }
-        // //second
-        // if(first.z > 0 && second.z < 0 && third.z > 0){
-        //     Rvec3 one, two;
-        //     one = interpolatePoint(first, second);
-        //     two = interpolatePoint(first, third);
-        // }
-        // //third
-        // if(first.z > 0 && second.z > 0 && third.z < 0){
-        //     Rvec3 one, two;
-        //     one = interpolatePoint(first, second);
-        //     two = interpolatePoint(first, third);
+        // if(vertexInFrustum(first, rc) && !vertexInFrustum(second, rc) && vertexInFrustum(third, rc)){
             
-        //     drawLines(rc, clr,)
-        //     drawLines(rc, clr)
-        //     drawLines(rc, clr)
-        //     drawlines(rc, clr)
-        //     drawlines(rc, clr)
-
-        //     continue;
         // }
+        // if(vertexInFrustum(first, rc) && vertexInFrustum(second, rc) && !vertexInFrustum(third, rc)){
+            
+        // }
+
+
+        //if two vertices are outside the frustum
+
+
+
         linesStart = SDL_GetTicks();
-        drawLines(rc, clr,
-        first.x, first.y, first.z,
-        second.x, second.y, second.z);
+        drawLines(rc, clr, first, second);
 
-        drawLines(rc, clr,
-        second.x, second.y, second.z,
-        third.x, third.y, third.z);
+        drawLines(rc, clr, second, third);
 
-        drawLines(rc, clr,
-        first.x, first.y, first.z,
-        third.x, third.y, third.z);
+        drawLines(rc, clr, first, third);
         linesEnd = SDL_GetTicks();
         // for(int i = 0; i <= rc->height * 4; i += 4)
         // printf("%d, %d, %d, %d\n", rc->scanlineSpec[i], rc->scanlineSpec[i + 1], rc->scanlineSpec[i + 2], rc->scanlineSpec[i + 3]);

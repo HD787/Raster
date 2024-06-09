@@ -96,9 +96,14 @@ void scanline(renderContext* rc, color clr)
     }
 }
 
-void drawLines(renderContext* rc, color clr, int x1, int y1, int z1, int x2, int y2, int z2)
+void drawLines(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
 {
-    // consider more structs to organize things
+    int x1 = first.x;
+    int y1 = first.y;
+    int z1 = first.z;
+    int x2 = second.x;
+    int y2 = second.y;
+    int z2 = second.z;
     if (x1 < rc->width && x1 >= 0 && y1 < (rc->height) && y1 >= 0 && z1 < rc->zBuffer[(y1 * rc->width + x1)] && z1 > 0)
     {
         rc->zBuffer[(y1 * rc->width + x1)] = z1;
