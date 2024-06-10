@@ -121,42 +121,42 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
         loadEnd = SDL_GetTicks();
 
-        if(!triangleInFrustum(first, second, third, rc)) continue;
+        // if(!triangleInFrustum(first, second, third, rc)) continue;
 
-        //if one vertex is outside the frustum
-        if(!vertexInFrustum(first, rc) && vertexInFrustum(second, rc) && vertexInFrustum(third, rc)){
-            Rvec3 new1 = interpolatePoint(first, second);
-            Rvec3 new2 = interpolatePoint(first, third);
-            drawLines(rc, clr, new1, second);
-            drawLines(rc, clr, new2, second);
-            drawLines(rc, clr, new1, third);
-            drawLines(rc, clr, new1, new2);
-            drawLines(rc, clr, second, third);
-            scanline(rc, clr);
-            continue;
-        }
-        if(vertexInFrustum(first, rc) && !vertexInFrustum(second, rc) && vertexInFrustum(third, rc)){
-            Rvec3 new1 = interpolatePoint(second, first);
-            Rvec3 new2 = interpolatePoint(second, third);
-            drawLines(rc, clr, new1, first);
-            drawLines(rc, clr, new2, first);
-            drawLines(rc, clr, new1, third);
-            drawLines(rc, clr, new1, new2);
-            drawLines(rc, clr, first, third);
-            scanline(rc, clr);
-            continue; 
-        }
-        if(vertexInFrustum(first, rc) && vertexInFrustum(second, rc) && !vertexInFrustum(third, rc)){
-            Rvec3 new1 = interpolatePoint(third, first);
-            Rvec3 new2 = interpolatePoint(third, second);
-            drawLines(rc, clr, new1, first);
-            drawLines(rc, clr, new2, first);
-            drawLines(rc, clr, new1, second);
-            drawLines(rc, clr, new1, new2);
-            drawLines(rc, clr, first, second);
-            scanline(rc, clr);
-            continue;  
-        }
+        // //if one vertex is outside the frustum
+        // if(!vertexInFrustum(first, rc) && vertexInFrustum(second, rc) && vertexInFrustum(third, rc)){
+        //     Rvec3 new1 = interpolatePoint(first, second);
+        //     Rvec3 new2 = interpolatePoint(first, third);
+        //     drawLines(rc, clr, new1, second);
+        //     drawLines(rc, clr, new2, second);
+        //     drawLines(rc, clr, new1, third);
+        //     drawLines(rc, clr, new1, new2);
+        //     drawLines(rc, clr, second, third);
+        //     scanline(rc, clr);
+        //     continue;
+        // }
+        // if(vertexInFrustum(first, rc) && !vertexInFrustum(second, rc) && vertexInFrustum(third, rc)){
+        //     Rvec3 new1 = interpolatePoint(second, first);
+        //     Rvec3 new2 = interpolatePoint(second, third);
+        //     drawLines(rc, clr, new1, first);
+        //     drawLines(rc, clr, new2, first);
+        //     drawLines(rc, clr, new1, third);
+        //     drawLines(rc, clr, new1, new2);
+        //     drawLines(rc, clr, first, third);
+        //     scanline(rc, clr);
+        //     continue; 
+        // }
+        // if(vertexInFrustum(first, rc) && vertexInFrustum(second, rc) && !vertexInFrustum(third, rc)){
+        //     Rvec3 new1 = interpolatePoint(third, first);
+        //     Rvec3 new2 = interpolatePoint(third, second);
+        //     drawLines(rc, clr, new1, first);
+        //     drawLines(rc, clr, new2, first);
+        //     drawLines(rc, clr, new1, second);
+        //     drawLines(rc, clr, new1, new2);
+        //     drawLines(rc, clr, first, second);
+        //     scanline(rc, clr);
+        //     continue;  
+        // }
 
 
         //if two vertices are outside the frustum

@@ -8,7 +8,6 @@ Rvec3 interpolatePointForX(Rvec3 outer, Rvec3 inner, renderContext* rc){
     int t = (temp.x - inner.x) / (outer.x - inner.x);
     temp.y = inner.y + t * (inner.y - outer.y);
     temp.z = inner.z+ t * (inner.z - outer.z);
-
     return temp;
 }
 

@@ -42,7 +42,24 @@ void scanline(renderContext* rc, color clr)
             int x1 = rc->scanlineSpec[y * 4];
             int x2 = rc->scanlineSpec[y * 4 + 2];
             int z1 = rc->scanlineSpec[y * 4 + 1];
-            int z2 = rc->scanlineSpec[y * 4+ 3];
+            int z2 = rc->scanlineSpec[y * 4 + 3];
+            if(x1 < 0 && x2 < 0) continue;
+            if(x1 > rc->width && x2 > rc->width) continue;
+            if(z1 < 0 && z2 < 0) continue;
+            if(x1 < 0){
+                Rvec3 first, second;
+                first.x = x1; first.y = y; first.z = z1;
+                second.x = x2; second.y = y; second.z = z2; 
+                Rvec3 result = interpolatePointForX(first, second, rc); 
+                x1 = result.x; z1 = result.z;
+            }
+            if(x2 > rc->width){
+                Rvec3 first, second;
+                first.x = x1; first.y = y; first.z = z1;
+                second.x = x2; second.y = y; second.z = z2; 
+                Rvec3 result = interpolatePointForX(second, first, rc);
+                x2 = result.x; z2 = result.z;
+            }
             int dx = abs(x2 - x1);
             int dz = abs(z2 - z1);
             int zs;
@@ -124,9 +141,9 @@ void drawLines(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
     int dx = abs(x2 - x1);
     int dy = abs(y2 - y1);
     int dz = abs(z2 - z1);
-    if(dx > 2000) printf("%d, %d, %d, xemergency\n", dx, x1, x2);
-    if(dy > 2000) printf("%d, %d, %d, yemergency\n", dy, y1, y2);
-    if(dz > 2000) printf("%d, %d, %d, zemergency\n", dz, z1, z2);
+    // if(dx > 2000) printf("%d, %d, %d, xemergency\n", dx, x1, x2);
+    // if(dy > 2000) printf("%d, %d, %d, yemergency\n", dy, y1, y2);
+    // if(dz > 2000) printf("%d, %d, %d, zemergency\n", dz, z1, z2);
     int xs, ys, zs;
     if (x2 > x1)
         xs = 1;
