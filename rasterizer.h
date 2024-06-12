@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 //delete SDL from here later only for debugging purposes
-#include <SDL.h>
+//#include <SDL.h>
 #include "rasterTypes.h"
 #include "rasterMath.h"
 #include "rasterizerPrivateFunctions.h"
@@ -26,7 +26,7 @@ renderContext* createRenderContext(int width, int height){
     for (int i = 0; i < width * height; i ++)
         temp->zBuffer[i] = 1000;
 
-    temp->scanlineSpec = malloc(sizeof(int *) * height* 4);
+    temp->scanlineSpec = malloc(sizeof(int) * height * 4);
     for (int j = 0; j < height * 4; j += 4){
         temp->scanlineSpec[j] = -1000000;
         temp->scanlineSpec[j + 1] = -1000000;
@@ -108,10 +108,7 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
     {
         //commenting out this line disables backface culling
         //if(vb->indexBuffer[i/3] == 0) { continue;}
-        cleanStart = SDL_GetTicks();
         cleanScanlineSpec(rc);
-        cleanEnd = SDL_GetTicks();
-        loadStart = SDL_GetTicks();
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
 
@@ -121,67 +118,11 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
         loadEnd = SDL_GetTicks();
 
-        // if(!triangleInFrustum(first, second, third, rc)) continue;
-
-        // //if one vertex is outside the frustum
-        // if(!vertexInFrustum(first, rc) && vertexInFrustum(second, rc) && vertexInFrustum(third, rc)){
-        //     Rvec3 new1 = interpolatePoint(first, second);
-        //     Rvec3 new2 = interpolatePoint(first, third);
-        //     drawLines(rc, clr, new1, second);
-        //     drawLines(rc, clr, new2, second);
-        //     drawLines(rc, clr, new1, third);
-        //     drawLines(rc, clr, new1, new2);
-        //     drawLines(rc, clr, second, third);
-        //     scanline(rc, clr);
-        //     continue;
-        // }
-        // if(vertexInFrustum(first, rc) && !vertexInFrustum(second, rc) && vertexInFrustum(third, rc)){
-        //     Rvec3 new1 = interpolatePoint(second, first);
-        //     Rvec3 new2 = interpolatePoint(second, third);
-        //     drawLines(rc, clr, new1, first);
-        //     drawLines(rc, clr, new2, first);
-        //     drawLines(rc, clr, new1, third);
-        //     drawLines(rc, clr, new1, new2);
-        //     drawLines(rc, clr, first, third);
-        //     scanline(rc, clr);
-        //     continue; 
-        // }
-        // if(vertexInFrustum(first, rc) && vertexInFrustum(second, rc) && !vertexInFrustum(third, rc)){
-        //     Rvec3 new1 = interpolatePoint(third, first);
-        //     Rvec3 new2 = interpolatePoint(third, second);
-        //     drawLines(rc, clr, new1, first);
-        //     drawLines(rc, clr, new2, first);
-        //     drawLines(rc, clr, new1, second);
-        //     drawLines(rc, clr, new1, new2);
-        //     drawLines(rc, clr, first, second);
-        //     scanline(rc, clr);
-        //     continue;  
-        // }
-
-
-        //if two vertices are outside the frustum
-
-
-
-        linesStart = SDL_GetTicks();
         drawLines(rc, clr, first, second);
-
         drawLines(rc, clr, second, third);
-
         drawLines(rc, clr, first, third);
-        linesEnd = SDL_GetTicks();
-        // for(int i = 0; i <= rc->height * 4; i += 4)
-        // printf("%d, %d, %d, %d\n", rc->scanlineSpec[i], rc->scanlineSpec[i + 1], rc->scanlineSpec[i + 2], rc->scanlineSpec[i + 3]);
-        scanLineStart = SDL_GetTicks();
+
         scanline(rc, clr);
-        scanLineEnd = SDL_GetTicks();
-        
-        loadInterval += loadEnd - loadStart;
-        cleanInterval += cleanEnd - cleanStart;
-        lineInterval += linesEnd - linesStart;
-        scanLineInterval += scanLineEnd - scanLineStart;
     }
     
-    
-    //printf("lines: %d, scan: %d, clean: %d, load: %d\n", lineInterval, scanLineInterval, cleanInterval, loadInterval);
 }
