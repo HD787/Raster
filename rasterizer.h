@@ -94,15 +94,6 @@ void cleanRenderContext(renderContext* rc){
 
 void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 {   
-    SDL_Init(SDL_INIT_TIMER);
-    Uint32  linesStart, linesEnd,
-            scanLineStart, scanLineEnd,
-            cleanStart, cleanEnd,
-            loadStart, loadEnd;
-    Uint32 lineInterval = 0;
-    Uint32 scanLineInterval = 0;
-    Uint32 cleanInterval = 0;
-    Uint32 loadInterval = 0;
 
     for (int i = 0; i < vb->length; i += 9)
     {
