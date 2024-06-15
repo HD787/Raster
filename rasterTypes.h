@@ -8,8 +8,6 @@ typedef struct{
     byte r, g, b;
 }color;
 
-//
-
 typedef struct{
     byte* inputColors;
     byte* colors;

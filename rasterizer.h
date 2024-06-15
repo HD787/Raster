@@ -43,6 +43,7 @@ void deleteRenderContext(renderContext* rc){
     free(rc->frameBuffer);
     free(rc->zBuffer);
     free(rc->scanlineSpec);
+    free(rc);
 }
 
 //size is not count/stride
