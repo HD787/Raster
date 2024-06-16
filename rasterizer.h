@@ -108,7 +108,6 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
         second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
         third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
-        loadEnd = SDL_GetTicks();
 
         drawLines(rc, clr, first, second);
         drawLines(rc, clr, second, third);
