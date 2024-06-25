@@ -3,8 +3,8 @@
 //delete SDL from here later only for debugging purposes
 //#include <SDL.h>
 #include "rasterTypes.h"
-#include "rasterMath.h"
-#include "rasterizerPrivateFunctions.h"
+#include "rasterMath.c"
+#include "rasterizerPrivateFunctions.c"
 
 #define X1 0
 #define Y1 1
