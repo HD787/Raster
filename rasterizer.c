@@ -120,6 +120,11 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 
 /* ALTERNATE RGBA FUNCTIONS */
 
+void cleanRenderContext_RGBA(renderContext* rc){
+    cleanFrameBuffer_RGBA(rc);
+    cleanzBuffer(rc);
+}
+
 renderContext* createRenderContext_RGBA(int width, int height){
    renderContext* temp = malloc(sizeof(renderContext));
     //the RGBA version has a stride of 4 in the framebuffer, no other differences.
@@ -149,7 +154,7 @@ void rasterize_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
     {
         //commenting out this line disables backface culling
         //if(vb->indexBuffer[i/3] == 0) { continue;}
-        cleanScanlineSpec_RGBA(rc);
+        cleanScanlineSpec(rc);
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
 

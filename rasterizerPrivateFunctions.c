@@ -375,7 +375,7 @@ void scanline_RGBA(renderContext* rc, color clr)
     }
 }
 
-void drawLines(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
+void drawLines_RGBA(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
 {
     int x1 = first.x;
     int y1 = first.y;
