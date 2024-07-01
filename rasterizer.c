@@ -117,3 +117,52 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
     }
     
 }
+
+/* ALTERNATE RGBA FUNCTIONS */
+
+renderContext* createRenderContext_RGBA(int width, int height){
+   renderContext* temp = malloc(sizeof(renderContext));
+    //the RGBA version has a stride of 4 in the framebuffer, no other differences.
+    temp->frameBuffer = calloc(height * width * 4, sizeof(byte));
+
+    temp->zBuffer = malloc(sizeof(int) * width * height);
+    for (int i = 0; i < width * height; i ++)
+        temp->zBuffer[i] = 1000;
+
+    temp->scanlineSpec = malloc(sizeof(int) * height * 4);
+    for (int j = 0; j < height * 4; j += 4){
+        temp->scanlineSpec[j] = -1000000;
+        temp->scanlineSpec[j + 1] = -1000000;
+        temp->scanlineSpec[j + 2] = -1000000;
+        temp->scanlineSpec[j + 3] = -1000000;
+    }
+
+    temp->height = height;
+    temp->width = width;
+    return temp; 
+}
+
+void rasterize_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
+{   
+
+    for (int i = 0; i < vb->length; i += 9)
+    {
+        //commenting out this line disables backface culling
+        //if(vb->indexBuffer[i/3] == 0) { continue;}
+        cleanScanlineSpec_RGBA(rc);
+        color clr;
+        clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
+
+        Rvec3 first, second, third;
+        first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
+        second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
+        third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
+
+        drawLines_RGBA(rc, clr, first, second);
+        drawLines_RGBA(rc, clr, second, third);
+        drawLines_RGBA(rc, clr, first, third);
+
+        scanline_RGBA(rc, clr);
+    }
+    
+}
