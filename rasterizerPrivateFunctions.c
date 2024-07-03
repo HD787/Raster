@@ -288,6 +288,8 @@ void drawLines(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
 void cleanFrameBuffer_RGBA(renderContext* rc){
     for (int i = 0; i < rc->height * rc->width * 4; i++)
     {
+        if(i % 4 == 0)
+        rc->frameBuffer[i] = 255;
         rc->frameBuffer[i] = 0;
     } 
 }
@@ -306,20 +308,20 @@ void scanline_RGBA(renderContext* rc, color clr)
             if(x1 < 0 && x2 < 0) continue;
             if(x1 > rc->width && x2 > rc->width) continue;
             if(z1 < 0 && z2 < 0) continue;
-            if(x1 < 0){
-                Rvec3 first, second;
-                first.x = x1; first.y = y; first.z = z1;
-                second.x = x2; second.y = y; second.z = z2; 
-                Rvec3 result = interpolatePointForX(first, second, rc); 
-                x1 = result.x; z1 = result.z;
-            }
-            if(x2 > rc->width){
-                Rvec3 first, second;
-                first.x = x1; first.y = y; first.z = z1;
-                second.x = x2; second.y = y; second.z = z2; 
-                Rvec3 result = interpolatePointForX(second, first, rc);
-                x2 = result.x; z2 = result.z;
-            }
+            // if(x1 < 0){
+            //     Rvec3 first, second;
+            //     first.x = x1; first.y = y; first.z = z1;
+            //     second.x = x2; second.y = y; second.z = z2; 
+            //     Rvec3 result = interpolatePointForX(first, second, rc); 
+            //     x1 = result.x; z1 = result.z;
+            // }
+            // if(x2 > rc->width){
+            //     Rvec3 first, second;
+            //     first.x = x1; first.y = y; first.z = z1;
+            //     second.x = x2; second.y = y; second.z = z2; 
+            //     Rvec3 result = interpolatePointForX(second, first, rc);
+            //     x2 = result.x; z2 = result.z;
+            // }
             int dx = abs(x2 - x1);
             int dz = abs(z2 - z1);
             int zs;
@@ -337,10 +339,10 @@ void scanline_RGBA(renderContext* rc, color clr)
                     if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0)
                     {
                         rc->zBuffer[(y * rc->width + x)] = z;
-                        rc->frameBuffer[((y * rc->width + x) * 3)] = clr.r;
-                        rc->frameBuffer[((y * rc->width + x) * 3) + 1] = clr.g;
-                        rc->frameBuffer[((y * rc->width + x) * 3) + 2] = clr.b;
-                        rc->frameBuffer[((y * rc->width + x) * 3) + 2] = 255;
+                        rc->frameBuffer[((y * rc->width + x) * 4)] = clr.r;
+                        rc->frameBuffer[((y * rc->width + x) * 4) + 1] = clr.g;
+                        rc->frameBuffer[((y * rc->width + x) * 4) + 2] = clr.b;
+                        rc->frameBuffer[((y * rc->width + x) * 4) + 3] = 255;
                     }
                     error += dz;
                     if (error >= dx)
@@ -358,10 +360,10 @@ void scanline_RGBA(renderContext* rc, color clr)
                     if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0)
                     {
                         rc->zBuffer[(y * rc->width + x)] = z;
-                        rc->frameBuffer[((y * rc->width + x) * 3)] = clr.r;
-                        rc->frameBuffer[((y * rc->width + x) * 3) + 1] = clr.g;
-                        rc->frameBuffer[((y * rc->width + x) * 3) + 2] = clr.b;
-                        rc->frameBuffer[((y * rc->width + x) * 3) + 2] = 255;
+                        rc->frameBuffer[((y * rc->width + x) * 4)] = clr.r;
+                        rc->frameBuffer[((y * rc->width + x) * 4) + 1] = clr.g;
+                        rc->frameBuffer[((y * rc->width + x) * 4) + 2] = clr.b;
+                        rc->frameBuffer[((y * rc->width + x) * 4) + 3] = 255;
                     }
                     error += dx;
                     if (error >= dz)
@@ -386,10 +388,10 @@ void drawLines_RGBA(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
     if (x1 < rc->width && x1 >= 0 && y1 < (rc->height) && y1 >= 0 && z1 < rc->zBuffer[(y1 * rc->width + x1)] && z1 > 0)
     {
         rc->zBuffer[(y1 * rc->width + x1)] = z1;
-        rc->frameBuffer[((y1 * rc->width + x1) * 3)] = clr.r;
-        rc->frameBuffer[((y1 * rc->width + x1) * 3) + 1] = clr.g;
-        rc->frameBuffer[((y1 * rc->width + x1) * 3) + 2] = clr.b;
-        rc->frameBuffer[((y1 * rc->width + x1) * 3) + 3] = 255;
+        rc->frameBuffer[((y1 * rc->width + x1) * 4)] = clr.r;
+        rc->frameBuffer[((y1 * rc->width + x1) * 4) + 1] = clr.g;
+        rc->frameBuffer[((y1 * rc->width + x1) * 4) + 2] = clr.b;
+        rc->frameBuffer[((y1 * rc->width + x1) * 4) + 3] = 255;
     }
     if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1 * 4] || rc->scanlineSpec[y1 * 4] == -1000000))
     {
@@ -443,10 +445,10 @@ void drawLines_RGBA(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
             if (x1 < rc->width && x1 >= 0 && y1 < (rc->height) && y1 >= 0 && z1 < rc->zBuffer[(y1 * rc->width + x1)] && z1 > 0)
             {
                 rc->zBuffer[(y1 * rc->width + x1)] = z1;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3)] = clr.r;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 1] = clr.g;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 2] = clr.b;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 3] = 255;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4)] = clr.r;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 1] = clr.g;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 2] = clr.b;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 3] = 255;
             }
             if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1 * 4] || rc->scanlineSpec[y1 * 4] == -1000000))
             {
@@ -484,10 +486,10 @@ void drawLines_RGBA(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
             if (x1 < rc->width && x1 >= 0 && y1 < (rc->height) && y1 >= 0 && z1 < rc->zBuffer[(y1 * rc->width + x1)] && z1 > 0)
             {   
                 rc->zBuffer[(y1 * rc->width + x1)] = z1;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3)] = clr.r;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 1] = clr.g;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 2] = clr.b;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 3] = 255;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4)] = clr.r;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 1] = clr.g;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 2] = clr.b;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 3] = 255;
             }
             if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1 * 4] || rc->scanlineSpec[y1 * 4] == -1000000))
             {
@@ -525,10 +527,10 @@ void drawLines_RGBA(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
             if (x1 < rc->width && x1 >= 0 && y1 < (rc->height) && y1 >= 0 && z1 < rc->zBuffer[(y1 * rc->width + x1)] && z1 > 0)
             {
                 rc->zBuffer[(y1 * rc->width + x1)] = z1;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3)] = clr.r;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 1] = clr.g;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 2] = clr.b;
-                rc->frameBuffer[((y1 * rc->width + x1) * 3) + 3] = 255;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4)] = clr.r;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 1] = clr.g;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 2] = clr.b;
+                rc->frameBuffer[((y1 * rc->width + x1) * 4) + 3] = 255;
             }
             if (y1 >= 0 && y1 < rc->height && (x1 <= rc->scanlineSpec[y1 * 4] || rc->scanlineSpec[y1 * 4] == -1000000))
             {

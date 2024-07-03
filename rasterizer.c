@@ -128,7 +128,12 @@ void cleanRenderContext_RGBA(renderContext* rc){
 renderContext* createRenderContext_RGBA(int width, int height){
    renderContext* temp = malloc(sizeof(renderContext));
     //the RGBA version has a stride of 4 in the framebuffer, no other differences.
-    temp->frameBuffer = calloc(height * width * 4, sizeof(byte));
+    temp->frameBuffer = malloc(sizeof(byte) * height * width * 4);
+    for(int i = 0; i < height * width * 4; i++){
+        if(i % 4 == 0)
+        temp->frameBuffer[i] = 255;
+        temp->frameBuffer[i] = 0;
+    }
 
     temp->zBuffer = malloc(sizeof(int) * width * height);
     for (int i = 0; i < width * height; i ++)
