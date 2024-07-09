@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 //delete SDL from here later only for debugging purposes
 //#include <SDL.h>
 #include "rasterTypes.h"

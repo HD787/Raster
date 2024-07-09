@@ -11,7 +11,7 @@ void colorPixel(renderContext* rc, int x, int y, byte r, byte g, byte b)
 
 
 void cleanScanlineSpec(renderContext* rc){
-    for(int i = 0; i < rc->height * 4; i++){
+    for(int i = 0; i < rc->height * 4 ; i+=4){
         rc->scanlineSpec[i] = -1000000;
         rc->scanlineSpec[i + 1] = -1000000;
         rc->scanlineSpec[i + 2] = -1000000;
@@ -286,11 +286,12 @@ void drawLines(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
 /* ALTERNATE FUNCTIONS FOR RGBA OUTPUT */
 
 void cleanFrameBuffer_RGBA(renderContext* rc){
-    for (int i = 0; i < rc->height * rc->width * 4; i++)
+    for (int i = 0; i < rc->height * rc->width * 4; i += 4)
     {
-        if(i % 4 == 0)
-        rc->frameBuffer[i] = 255;
         rc->frameBuffer[i] = 0;
+        rc->frameBuffer[i + 1] = 0;
+        rc->frameBuffer[i + 2] = 0;
+        rc->frameBuffer[i + 3] = 255;
     } 
 }
 
