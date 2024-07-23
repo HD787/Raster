@@ -178,7 +178,7 @@ void rasterize_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
     
 }
 
-void rasterizeNoWireFrame_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
+void rasterizeNoScanline_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
 {   
 
     for (int i = 0; i < vb->length; i += 9)
