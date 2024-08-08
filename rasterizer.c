@@ -114,7 +114,7 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         drawLines(rc, clr, second, third);
         drawLines(rc, clr, first, third);
 
-        scanline(rc, clr);
+        //scanline(rc, clr);
     }
     
 }

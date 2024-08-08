@@ -141,9 +141,6 @@ void drawLines(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
     int dx = abs(x2 - x1);
     int dy = abs(y2 - y1);
     int dz = abs(z2 - z1);
-    // if(dx > 2000) printf("%d, %d, %d, xemergency\n", dx, x1, x2);
-    // if(dy > 2000) printf("%d, %d, %d, yemergency\n", dy, y1, y2);
-    // if(dz > 2000) printf("%d, %d, %d, zemergency\n", dz, z1, z2);
     int xs, ys, zs;
     if (x2 > x1)
         xs = 1;
