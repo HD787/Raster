@@ -197,6 +197,8 @@ void rasterizeNoScanline_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* 
         drawLines_RGBA(rc, clr, first, second);
         drawLines_RGBA(rc, clr, second, third);
         drawLines_RGBA(rc, clr, first, third);
+
+        scanline_RGBA(rc, clr);
     }
     
 }
