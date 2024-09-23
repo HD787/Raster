@@ -47,9 +47,7 @@ void deleteRenderContext(renderContext* rc){
     free(rc);
 }
 
-//size is not count/stride
-//thats a division sign btw
-//but maybe it should be
+//size is the number of vertices not triangles, this may have been a poor decision
 vertexBuffer* createVertexBuffer(int size){
     vertexBuffer* temp = malloc(sizeof(vertexBuffer));
     temp->inputVertices = malloc(sizeof(float) * size);
