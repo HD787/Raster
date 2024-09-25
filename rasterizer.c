@@ -92,11 +92,8 @@ void cleanRenderContext(renderContext* rc){
     cleanzBuffer(rc);
 }
 
-void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
-{   
-
-    for (int i = 0; i < vb->length; i += 9)
-    {
+void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb){   
+    for (int i = 0; i < vb->length; i += 9){
         //commenting out this line disables backface culling
         //if(vb->indexBuffer[i/3] == 0) { continue;}
         cleanScanlineSpec(rc);
@@ -111,10 +108,31 @@ void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
         drawLines(rc, clr, first, second);
         drawLines(rc, clr, second, third);
         drawLines(rc, clr, first, third);
-
         //scanline(rc, clr);
+    } 
+}
+
+void rasterizeChunk(renderContext* rc, vertexBuffer *vb, colorBuffer* cb, unsigned char* indexBuffer){ 
+    int c = 0;
+    for (int j = 0; j < vb->length; j += 108){
+        if(indexBuffer[j/108] == 0) {continue;}
+        c++;
+        for(int i = 0; i < 108; i += 9){
+            cleanScanlineSpec(rc);
+            color clr;
+            clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
+
+            Rvec3 first, second, third;
+            first.x = vb->vertices[i + X1];  first.y  = vb->vertices[i + Y1]; first.z = vb->vertices[i + Z1];
+            second.x = vb->vertices[i + X2]; second.y = vb->vertices[i + Y2]; second.z = vb->vertices[i + Z2];
+            third.x = vb->vertices[i + X3];  third.y = vb->vertices[i + Y3];  third.z =  vb->vertices[i + Z3];
+            drawLines(rc, clr, first, second);
+            drawLines(rc, clr, second, third);
+            drawLines(rc, clr, first, third);
+            scanline(rc, clr);
+        }
     }
-    
+    // printf("%i ", c);
 }
 
 /* ALTERNATE RGBA FUNCTIONS */
@@ -151,11 +169,8 @@ renderContext* createRenderContext_RGBA(int width, int height){
     return temp; 
 }
 
-void rasterize_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
-{   
-
-    for (int i = 0; i < vb->length; i += 9)
-    {
+void rasterize_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb){   
+    for (int i = 0; i < vb->length; i += 9){
         //commenting out this line disables backface culling
         //if(vb->indexBuffer[i/3] == 0) { continue;}
         cleanScanlineSpec(rc);
@@ -176,11 +191,8 @@ void rasterize_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
     
 }
 
-void rasterizeNoScanline_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb)
-{   
-
-    for (int i = 0; i < vb->length; i += 9)
-    {
+void rasterizeNoScanline_RGBA(renderContext* rc, vertexBuffer *vb, colorBuffer* cb){   
+    for (int i = 0; i < vb->length; i += 9){
         //commenting out this line disables backface culling
         //if(vb->indexBuffer[i/3] == 0) { continue;}
         cleanScanlineSpec(rc);
