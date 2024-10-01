@@ -40,6 +40,28 @@ renderContext* createRenderContext(int width, int height){
     return temp;
 }
 
+renderContext* createRenderContextFloat(int width, int height){
+    renderContext* temp = malloc(sizeof(renderContext));
+
+    temp->frameBuffer = calloc(height * width * 3, sizeof(byte));
+
+    temp->zBuffer = malloc(sizeof(int) * width * height);
+    for (int i = 0; i < width * height; i ++)
+        temp->zBufferFloat[i] = 1000;
+
+    temp->scanlineSpecFloat = malloc(sizeof(int) * height * 4);
+    for (int j = 0; j < height * 4; j += 4){
+        temp->scanlineSpecFloat[j] = -1000000;
+        temp->scanlineSpecFloat[j + 1] = -1000000;
+        temp->scanlineSpecFloat[j + 2] = -1000000;
+        temp->scanlineSpecFloat[j + 3] = -1000000;
+    }
+
+    temp->height = height;
+    temp->width = width;
+    return temp;
+}
+
 void deleteRenderContext(renderContext* rc){
     free(rc->frameBuffer);
     free(rc->zBuffer);
