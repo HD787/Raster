@@ -556,14 +556,30 @@ void drawLinesFloat(renderContext* rc, color clr, Rvec3 first, Rvec3 second){
     else if(dy > dx && dy > dz) steps = dy;
     else steps = dz;
 
-    float xIncrement = dx / (float)steps;
-    float yIncrement = dy / (float)steps;
-    float zIncrement = dz / (float)steps;
+    float xIncrement = dx / steps;
+    float yIncrement = dy / steps;
+    float zIncrement = dz / steps;
     float x = x1;
     float y = y1;
     float z = z1;
-    for(int i = 0; i < (int)steps + 1; i++){
-        //write pixel
+    for(int i = 0; i < round(steps); i++){
+        if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[round((y * rc->width + x))] && z > 0)
+        {
+            rc->zBuffer[round((y * rc->width + x1))] = z;
+            rc->frameBuffer[round(((y * rc->width + x) * 4))] = clr.r;
+            rc->frameBuffer[round(((y * rc->width + x) * 4) + 1)] = clr.g;
+            rc->frameBuffer[round(((y * rc->width + x) * 4) + 2)] = clr.b;
+        }
+        if (y >= 0 && y < rc->height && (x <= rc->scanlineSpec[round(y * 4)] || rc->scanlineSpec[round(y * 4)] == -1000000))
+        {
+            rc->scanlineSpec[round(y * 4)] = round(x);
+            rc->scanlineSpec[round((y * 4) + 1)] = round(z);
+        }
+        if (y >= 0 && y < rc->height && (x >= rc->scanlineSpec[round((y * 4) + 2)] || rc->scanlineSpec[round((y * 4) + 2)] == -1000000))
+        { 
+            rc->scanlineSpec[round((y * 4) + 2)] = round(x);
+            rc->scanlineSpec[round((y * 4) + 3)] = round(z);
+        }
         x += xIncrement;
         y += yIncrement;
         z += zIncrement;
