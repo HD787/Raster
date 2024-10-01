@@ -33,6 +33,8 @@ typedef struct{
 typedef struct{
     byte* frameBuffer;
     int* zBuffer;
+    float* zBufferFloat;
+    float* scanlineSpecFloat;
     //stride of 4
     int* scanlineSpec;
     int height;

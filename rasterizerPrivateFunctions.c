@@ -69,11 +69,9 @@ void scanline(renderContext* rc, color clr)
             else
                 zs = -1;
             int error = 0;
-            if (dx > dz)
-            {
+            if (dx > dz){
                 // driving x axis
-                for (int z = z1, x = x1; x != x2; x += xs)
-                {
+                for (int z = z1, x = x1; x != x2; x += xs){
                     if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0)
                     {
                         rc->zBuffer[(y * rc->width + x)] = z;
@@ -82,28 +80,23 @@ void scanline(renderContext* rc, color clr)
                         rc->frameBuffer[((y * rc->width + x) * 3) + 2] = clr.b;
                     }
                     error += dz;
-                    if (error >= dx)
-                    {
+                    if (error >= dx){
                         z += zs;
                         error -= dx;
                     }
                 }
             }
-            else
-            {
+            else{
                 // driving z axis
-                for (int z = z1, x = x1; z != z2; z += zs)
-                {
-                    if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0)
-                    {
+                for (int z = z1, x = x1; z != z2; z += zs){
+                    if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0){
                         rc->zBuffer[(y * rc->width + x)] = z;
                         rc->frameBuffer[((y * rc->width + x) * 3)] = clr.r;
                         rc->frameBuffer[((y * rc->width + x) * 3) + 1] = clr.g;
                         rc->frameBuffer[((y * rc->width + x) * 3) + 2] = clr.b;
                     }
                     error += dx;
-                    if (error >= dz)
-                    {
+                    if (error >= dz){
                         x += xs;
                         error -= dz;
                     }
@@ -541,5 +534,38 @@ void drawLines_RGBA(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
                 rc->scanlineSpec[(y1 * 4) + 3] = z1;
             }
         }
+    }
+}
+
+void scanlineFloat(renderContext* rc, color clr){}
+
+void drawLinesFloat(renderContext* rc, color clr, Rvec3 first, Rvec3 second){
+    float x1 = first.x;
+    float y1 = first.y;
+    float z1 = first.z;
+    float x2 = second.x;
+    float y2 = second.y;
+    float z2 = second.z;
+
+    float dx = abs(x1 - x2);
+    float dy = abs(y1 - y2);
+    float dz = abs(z1 - z2);
+
+    float steps;
+    if(dx > dy && dx > dz) steps = dx;
+    else if(dy > dx && dy > dz) steps = dy;
+    else steps = dz;
+
+    float xIncrement = dx / (float)steps;
+    float yIncrement = dy / (float)steps;
+    float zIncrement = dz / (float)steps;
+    float x = x1;
+    float y = y1;
+    float z = z1;
+    for(int i = 0; i < (int)steps + 1; i++){
+        //write pixel
+        x += xIncrement;
+        y += yIncrement;
+        z += zIncrement;
     }
 }
