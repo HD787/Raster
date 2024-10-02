@@ -19,9 +19,24 @@ void cleanScanlineSpec(renderContext* rc){
     }
 }
 
+void cleanScanlineSpecFloat(renderContext* rc){
+    for(int i = 0; i < rc->height * 4 ; i+=4){
+        rc->scanlineSpecFloat[i] = -1000000.0f;
+        rc->scanlineSpecFloat[i + 1] = -1000000.0f;
+        rc->scanlineSpecFloat[i + 2] = -1000000.0f;
+        rc->scanlineSpecFloat[i + 3] = -1000000.0f;
+    }
+}
+
 void cleanzBuffer(renderContext* rc){
     for (int i = 0; i < (rc->width * rc->height); i++){
         rc->zBuffer[i] = 1000;
+    }
+}
+
+void cleanzBufferFloat(renderContext* rc){
+    for (int i = 0; i < (rc->width * rc->height); i++){
+        rc->zBufferFloat[i] = 1000.0f;
     }
 }
 
