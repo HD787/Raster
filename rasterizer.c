@@ -145,7 +145,7 @@ void rasterizeFloat(renderContext* rc, vertexBuffer *vb, colorBuffer* cb){
     for (int i = 0; i < vb->length; i += 9){
         //commenting out this line disables backface culling
         //if(vb->indexBuffer[i/3] == 0) { continue;}
-        cleanScanlineSpec(rc);
+        cleanScanlineSpecFloat(rc);
         color clr;
         clr.r = cb->colors[i]; clr.g = cb->colors[i + 1]; clr.b = cb->colors[i + 2];
 
@@ -183,13 +183,13 @@ void rasterizeChunk(renderContext* rc, vertexBuffer *vb, colorBuffer* cb, unsign
     }
 }
 
-void rasterizeChunk(renderContext* rc, vertexBuffer *vb, colorBuffer* cb, unsigned char* indexBuffer){ 
+void rasterizeChunkFloat(renderContext* rc, vertexBuffer *vb, colorBuffer* cb, unsigned char* indexBuffer){ 
     int c = 0;
     for (int j = 0; j < vb->length; j += 108){
         if(indexBuffer[j/108] == 0) {continue;}
         c++;
         for(int i = 0; i < 108; i += 9){
-            cleanScanlineSpec(rc);
+            cleanScanlineSpecFloat(rc);
             color clr;
             clr.r = cb->colors[j + i]; clr.g = cb->colors[j + i + 1]; clr.b = cb->colors[j + i + 2];
 
