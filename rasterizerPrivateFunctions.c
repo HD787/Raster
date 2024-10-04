@@ -303,10 +303,8 @@ void cleanFrameBuffer_RGBA(renderContext* rc){
 
 void scanline_RGBA(renderContext* rc, color clr)
 {
-    for (int y = 0; y < rc->height; y += 1)
-    {
-        if (rc->scanlineSpec[y * 4] != -1000000 && rc->scanlineSpec[y * 4 + 2] != -1000000)
-        {
+    for (int y = 0; y < rc->height; y += 1){
+        if (rc->scanlineSpec[y * 4] != -1000000 && rc->scanlineSpec[y * 4 + 2] != -1000000){
             int x1 = rc->scanlineSpec[y * 4];
             int x2 = rc->scanlineSpec[y * 4 + 2];
             int z1 = rc->scanlineSpec[y * 4 + 1];
@@ -337,13 +335,10 @@ void scanline_RGBA(renderContext* rc, color clr)
             else
                 zs = -1;
             int error = 0;
-            if (dx > dz)
-            {
+            if (dx > dz){
                 // driving x axis
-                for (int z = z1, x = x1; x != x2; x += xs)
-                {
-                    if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0)
-                    {
+                for (int z = z1, x = x1; x != x2; x += xs){
+                    if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0){
                         rc->zBuffer[(y * rc->width + x)] = z;
                         rc->frameBuffer[((y * rc->width + x) * 4)] = clr.r;
                         rc->frameBuffer[((y * rc->width + x) * 4) + 1] = clr.g;
@@ -351,20 +346,16 @@ void scanline_RGBA(renderContext* rc, color clr)
                         rc->frameBuffer[((y * rc->width + x) * 4) + 3] = 255;
                     }
                     error += dz;
-                    if (error >= dx)
-                    {
+                    if (error >= dx){
                         z += zs;
                         error -= dx;
                     }
                 }
             }
-            else
-            {
+            else{
                 // driving z axis
-                for (int z = z1, x = x1; z != z2; z += zs)
-                {
-                    if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0)
-                    {
+                for (int z = z1, x = x1; z != z2; z += zs){
+                    if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(y * rc->width + x)] && z > 0){
                         rc->zBuffer[(y * rc->width + x)] = z;
                         rc->frameBuffer[((y * rc->width + x) * 4)] = clr.r;
                         rc->frameBuffer[((y * rc->width + x) * 4) + 1] = clr.g;
@@ -372,8 +363,7 @@ void scanline_RGBA(renderContext* rc, color clr)
                         rc->frameBuffer[((y * rc->width + x) * 4) + 3] = 255;
                     }
                     error += dx;
-                    if (error >= dz)
-                    {
+                    if (error >= dz){
                         x += xs;
                         error -= dz;
                     }
@@ -552,7 +542,43 @@ void drawLines_RGBA(renderContext* rc, color clr, Rvec3 first, Rvec3 second)
     }
 }
 
-void scanlineFloat(renderContext* rc, color clr){}
+void scanlineFloat(renderContext* rc, color clr){
+   for (int y = 0; y < rc->height; y += 1){
+        if (rc->scanlineSpecFloat[y * 4] != -1000000 && rc->scanlineSpecFloat[y * 4 + 2] != -1000000){
+            float x1 = rc->scanlineSpecFloat[y * 4];
+            float x2 = rc->scanlineSpecFloat[y * 4 + 2];
+            float z1 = rc->scanlineSpecFloat[y * 4 + 1];
+            float z2 = rc->scanlineSpecFloat[y * 4 + 3];
+            if(x1 < 0 && x2 < 0) continue;
+            if(x1 > rc->width && x2 > rc->width) continue;
+            if(z1 < 0 && z2 < 0) continue;
+            float dx = abs(x2 - x1);
+            float dz = abs(z2 - z1);
+            float steps;
+            if (dz < dx) steps = dx;
+            else steps = dz;
+            for(int x = 0; x < round; i++){
+               if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[round((y * rc->width + x))] && z > 0){
+                rc->zBuffer[round((y * rc->width + x1))] = z;
+                rc->frameBuffer[round(((y * rc->width + x) * 4))] = clr.r;
+                rc->frameBuffer[round(((y * rc->width + x) * 4) + 1)] = clr.g;
+                rc->frameBuffer[round(((y * rc->width + x) * 4) + 2)] = clr.b;
+                }
+                if (y >= 0 && y < rc->height && (x <= rc->scanlineSpec[round(y * 4)] || rc->scanlineSpec[round(y * 4)] == -1000000)){
+                    rc->scanlineSpec[round(y * 4)] = round(x);
+                    rc->scanlineSpec[round((y * 4) + 1)] = round(z);
+                }
+                if (y >= 0 && y < rc->height && (x >= rc->scanlineSpec[round((y * 4) + 2)] || rc->scanlineSpec[round((y * 4) + 2)] == -1000000)){ 
+                    rc->scanlineSpec[round((y * 4) + 2)] = round(x);
+                    rc->scanlineSpec[round((y * 4) + 3)] = round(z);
+                }
+                x += xIncrement;
+                y += yIncrement;
+                z += zIncrement; 
+            }
+        }
+    }
+}
 
 void drawLinesFloat(renderContext* rc, color clr, Rvec3 first, Rvec3 second){
     float x1 = first.x;
@@ -578,20 +604,17 @@ void drawLinesFloat(renderContext* rc, color clr, Rvec3 first, Rvec3 second){
     float y = y1;
     float z = z1;
     for(int i = 0; i < round(steps); i++){
-        if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[round((y * rc->width + x))] && z > 0)
-        {
+        if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[round((y * rc->width + x))] && z > 0){
             rc->zBuffer[round((y * rc->width + x1))] = z;
             rc->frameBuffer[round(((y * rc->width + x) * 4))] = clr.r;
             rc->frameBuffer[round(((y * rc->width + x) * 4) + 1)] = clr.g;
             rc->frameBuffer[round(((y * rc->width + x) * 4) + 2)] = clr.b;
         }
-        if (y >= 0 && y < rc->height && (x <= rc->scanlineSpec[round(y * 4)] || rc->scanlineSpec[round(y * 4)] == -1000000))
-        {
+        if (y >= 0 && y < rc->height && (x <= rc->scanlineSpec[round(y * 4)] || rc->scanlineSpec[round(y * 4)] == -1000000)){
             rc->scanlineSpec[round(y * 4)] = round(x);
             rc->scanlineSpec[round((y * 4) + 1)] = round(z);
         }
-        if (y >= 0 && y < rc->height && (x >= rc->scanlineSpec[round((y * 4) + 2)] || rc->scanlineSpec[round((y * 4) + 2)] == -1000000))
-        { 
+        if (y >= 0 && y < rc->height && (x >= rc->scanlineSpec[round((y * 4) + 2)] || rc->scanlineSpec[round((y * 4) + 2)] == -1000000)){ 
             rc->scanlineSpec[round((y * 4) + 2)] = round(x);
             rc->scanlineSpec[round((y * 4) + 3)] = round(z);
         }
