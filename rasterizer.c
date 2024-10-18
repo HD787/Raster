@@ -45,7 +45,7 @@ renderContext* createRenderContextFloat(int width, int height){
 
     temp->frameBuffer = calloc(height * width * 3, sizeof(byte));
 
-    temp->zBuffer = malloc(sizeof(int) * width * height);
+    temp->zBufferFloat = malloc(sizeof(int) * width * height);
     for (int i = 0; i < width * height; i ++)
         temp->zBufferFloat[i] = 1000;
 
@@ -119,6 +119,11 @@ void deleteColorBuffer(colorBuffer* cb){
 void cleanRenderContext(renderContext* rc){
     cleanFrameBuffer(rc);
     cleanzBuffer(rc);
+}
+
+void cleanRenderContextFloat(renderContext*rc){
+    cleanFrameBuffer(rc);
+    cleanzBufferFloat(rc);
 }
 
 void rasterize(renderContext* rc, vertexBuffer *vb, colorBuffer* cb){   
