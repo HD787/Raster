@@ -552,28 +552,23 @@ void scanlineFloat(renderContext* rc, color clr){
             if(x1 < 0 && x2 < 0) continue;
             if(x1 > rc->width && x2 > rc->width) continue;
             if(z1 < 0 && z2 < 0) continue;
-            float dx = abs(x2 - x1);
-            float dz = abs(z2 - z1);
+            float dx = fabsf(x2 - x1);
+            float dz = fabsf(z2 - z1);
             float steps;
             if (dz < dx) steps = dx;
             else steps = dz;
-            for(int x = 0; x < round; i++){
-               if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[round((y * rc->width + x))] && z > 0){
-                rc->zBuffer[round((y * rc->width + x1))] = z;
-                rc->frameBuffer[round(((y * rc->width + x) * 4))] = clr.r;
-                rc->frameBuffer[round(((y * rc->width + x) * 4) + 1)] = clr.g;
-                rc->frameBuffer[round(((y * rc->width + x) * 4) + 2)] = clr.b;
-                }
-                if (y >= 0 && y < rc->height && (x <= rc->scanlineSpec[round(y * 4)] || rc->scanlineSpec[round(y * 4)] == -1000000)){
-                    rc->scanlineSpec[round(y * 4)] = round(x);
-                    rc->scanlineSpec[round((y * 4) + 1)] = round(z);
-                }
-                if (y >= 0 && y < rc->height && (x >= rc->scanlineSpec[round((y * 4) + 2)] || rc->scanlineSpec[round((y * 4) + 2)] == -1000000)){ 
-                    rc->scanlineSpec[round((y * 4) + 2)] = round(x);
-                    rc->scanlineSpec[round((y * 4) + 3)] = round(z);
+            float xIncrement = dx / steps;
+            float zIncrement = dz / steps;
+            float x = x1;
+            float z = z1;
+            for(int i = 0; i < (int)round(steps); i++){
+               if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(int)round((y * rc->width + x))] && z > 0){
+                rc->zBuffer[(int)round((y * rc->width + x1))] = z;
+                rc->frameBuffer[(int)round(((y * rc->width + x) * 4))] = clr.r;
+                rc->frameBuffer[(int)round(((y * rc->width + x) * 4) + 1)] = clr.g;
+                rc->frameBuffer[(int)round(((y * rc->width + x) * 4) + 2)] = clr.b;
                 }
                 x += xIncrement;
-                y += yIncrement;
                 z += zIncrement; 
             }
         }
@@ -588,9 +583,9 @@ void drawLinesFloat(renderContext* rc, color clr, Rvec3 first, Rvec3 second){
     float y2 = second.y;
     float z2 = second.z;
 
-    float dx = abs(x1 - x2);
-    float dy = abs(y1 - y2);
-    float dz = abs(z1 - z2);
+    float dx = fabsf(x1 - x2);
+    float dy = fabsf(y1 - y2);
+    float dz = fabsf(z1 - z2);
 
     float steps;
     if(dx > dy && dx > dz) steps = dx;
@@ -603,20 +598,20 @@ void drawLinesFloat(renderContext* rc, color clr, Rvec3 first, Rvec3 second){
     float x = x1;
     float y = y1;
     float z = z1;
-    for(int i = 0; i < round(steps); i++){
-        if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[round((y * rc->width + x))] && z > 0){
-            rc->zBuffer[round((y * rc->width + x1))] = z;
-            rc->frameBuffer[round(((y * rc->width + x) * 4))] = clr.r;
-            rc->frameBuffer[round(((y * rc->width + x) * 4) + 1)] = clr.g;
-            rc->frameBuffer[round(((y * rc->width + x) * 4) + 2)] = clr.b;
+    for(int i = 0; i < (int)round(steps); i++){
+        if (x < rc->width && x >= 0 && y < (rc->height) && y >= 0 && z < rc->zBuffer[(int)round((y * rc->width + x))] && z > 0){
+            rc->zBuffer[(int)round((y * rc->width + x1))] = z;
+            rc->frameBuffer[(int)round(((y * rc->width + x) * 4))] = clr.r;
+            rc->frameBuffer[(int)round(((y * rc->width + x) * 4) + 1)] = clr.g;
+            rc->frameBuffer[(int)round(((y * rc->width + x) * 4) + 2)] = clr.b;
         }
-        if (y >= 0 && y < rc->height && (x <= rc->scanlineSpec[round(y * 4)] || rc->scanlineSpec[round(y * 4)] == -1000000)){
-            rc->scanlineSpec[round(y * 4)] = round(x);
-            rc->scanlineSpec[round((y * 4) + 1)] = round(z);
+        if (y >= 0 && y < rc->height && (x <= rc->scanlineSpec[(int)round(y * 4)] || rc->scanlineSpec[(int)round(y * 4)] == -1000000)){
+            rc->scanlineSpec[(int)round(y * 4)] = (int)round(x);
+            rc->scanlineSpec[(int)round((y * 4) + 1)] = (int)round(z);
         }
-        if (y >= 0 && y < rc->height && (x >= rc->scanlineSpec[round((y * 4) + 2)] || rc->scanlineSpec[round((y * 4) + 2)] == -1000000)){ 
-            rc->scanlineSpec[round((y * 4) + 2)] = round(x);
-            rc->scanlineSpec[round((y * 4) + 3)] = round(z);
+        if (y >= 0 && y < rc->height && (x >= rc->scanlineSpec[(int)round((y * 4) + 2)] || rc->scanlineSpec[(int)round((y * 4) + 2)] == -1000000)){ 
+            rc->scanlineSpec[(int)round((y * 4) + 2)] = (int)round(x);
+            rc->scanlineSpec[(int)round((y * 4) + 3)] = (int)round(z);
         }
         x += xIncrement;
         y += yIncrement;

@@ -70,7 +70,7 @@ void deleteRenderContext(renderContext* rc){
 }
 
 void deleteRenderContextFloat(renderContext* rc){
-    free(rc->frameBufferFloat);
+    free(rc->frameBuffer);
     free(rc->zBufferFloat);
     free(rc->scanlineSpecFloat);
     free(rc);
